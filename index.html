@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -261,7 +260,7 @@ function syncChips(containerId){
 syncChips('scopeRow');
 syncChips('modeRow');
 
-// === TTS — oddzielne, konkretne głosy EN i PL ===
+// === TTS — oddzielne lektory EN/PL z konkretnymi głosami i bezawaryjnym ładowaniem ===
 const EN_VOICE_PREFERRED = [
   'Google UK English Female',
   'Google US English',
@@ -286,6 +285,12 @@ const PL_VOICE_PREFERRED = [
   'Zofia'
 ];
 
+function getVoicesSafe(){
+  try{
+    return window.speechSynthesis ? (window.speechSynthesis.getVoices() || []) : [];
+  }catch(e){ return []; }
+}
+
 function findVoiceByNames(voices, names){
   const lower = voices.map(v => ({...v, _name: (v.name||'').toLowerCase()}));
   for(const n of names){
@@ -307,7 +312,7 @@ function findByLangs(voices, prefixes){
 
 function initVoices(){
   if(!window.speechSynthesis) return;
-  const voices = window.speechSynthesis.getVoices() || [];
+  const voices = getVoicesSafe();
   // EN: konkretne głosy -> język -> fallback
   ttsEN =
     findVoiceByNames(voices, EN_VOICE_PREFERRED) ||
@@ -331,20 +336,40 @@ function pickVoice(langPrefix){
   return isPL ? (ttsPL || ttsEN) : (ttsEN || ttsPL);
 }
 
-function speak(text, langPrefix){
+// Czekanie na załadowanie głosów (Chrome/Safari bywa kapryśny)
+function speak(text, langPrefix, attempt=0){
   if(!window.speechSynthesis) return;
+  const synth = window.speechSynthesis;
+  const voices = getVoicesSafe();
+
+  // Jeśli lista głosów pusta — spróbuj odpytać i ponowić po chwili
+  if(!voices.length && attempt < 8){
+    synth.getVoices(); // "kickstart"
+    setTimeout(()=>speak(text, langPrefix, attempt+1), 150);
+    return;
+  }
+
+  if(!ttsEN || !ttsPL) initVoices();
+
   const u = new SpeechSynthesisUtterance(text);
   const v = pickVoice(langPrefix);
+
   if(v){
     u.voice = v;
-    u.lang = v.lang || ((langPrefix || '').toLowerCase().startsWith('pl') ? 'pl-PL' : 'en-US');
+    u.lang = v.lang || ((langPrefix||'').toLowerCase().startsWith('pl') ? 'pl-PL' : 'en-US');
   } else {
-    u.lang = (langPrefix || '').toLowerCase().startsWith('pl') ? 'pl-PL' : 'en-US';
+    // Jeśli nie znaleziono głosu, zostaw domyślny; ustaw lang tylko jako sugestię
+    if(langPrefix){
+      u.lang = (langPrefix||'').toLowerCase().startsWith('pl') ? 'pl-PL' : 'en-US';
+    }
   }
+
   u.rate = 0.95;
   u.pitch = 1.0;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+
+  // Cancel tuż przed speak bywa "zjadane" w Safari — dajemy małe opóźnienie
+  try{ synth.cancel(); }catch(e){}
+  setTimeout(()=>{ try{ synth.speak(u); }catch(e){} }, 0);
 }
 
 document.getElementById('btnTTSen').onclick = ()=> current? speak(current.qLang==='en'? current.q : current.a, 'en'):null;
@@ -513,11 +538,10 @@ document.getElementById('speakBack').onclick = ()=>{ const it=flashItems[flashIn
 // Prefetch voices — inicjalizacja oddzielnych lektorów EN/PL
 if(window.speechSynthesis){
   window.speechSynthesis.onvoiceschanged = initVoices;
-  // Spróbuj także zainicjalizować od razu (na niektórych przeglądarkach)
+  // Kickstart pobierania listy głosów (często potrzebne w Chrome/Safari)
   window.speechSynthesis.getVoices();
-  initVoices();
+  setTimeout(initVoices, 0);
 }
 </script>
 </body>
 </html>
-```
