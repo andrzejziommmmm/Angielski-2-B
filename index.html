@@ -260,121 +260,59 @@ function syncChips(containerId){
 syncChips('scopeRow');
 syncChips('modeRow');
 
-// === TTS — oddzielne lektory EN/PL z konkretnymi głosami i bezawaryjnym ładowaniem ===
-const EN_VOICE_PREFERRED = [
-  'Google UK English Female',
-  'Google US English',
-  'Google UK English Male',
-  'Google English',
-  'Samantha',
-  'Daniel',
-  'Microsoft Aria Online (Natural) - English (United States)',
-  'Microsoft Zira Desktop - English (United States)',
-  'Microsoft David Desktop - English (United States)'
-];
+// === TTS ===
+// oddzielny angielski i polski lektor
+let voiceEN = null;
+let voicePL = null;
 
-const PL_VOICE_PREFERRED = [
-  'Google polski',
-  'Google Polish',
-  'Microsoft Paulina - Polish (Poland)',
-  'Microsoft Paulina Desktop - Polish (Poland)',
-  'Maja',
-  'Ewa',
-  'Jacek',
-  'Zosia',
-  'Zofia'
-];
-
-function getVoicesSafe(){
-  try{
-    return window.speechSynthesis ? (window.speechSynthesis.getVoices() || []) : [];
-  }catch(e){ return []; }
+function initVoices() {
+  const voices = window.speechSynthesis.getVoices();
+  // wybierz angielski (preferuj naturalne głosy)
+  voiceEN =
+    voices.find(v => v.lang.startsWith('en-GB')) ||
+    voices.find(v => v.lang.startsWith('en-US')) ||
+    voices.find(v => v.lang.toLowerCase().includes('en')) ||
+    voices[0];
+  // wybierz polski
+  voicePL =
+    voices.find(v => v.lang.startsWith('pl-')) ||
+    voices.find(v => v.lang.toLowerCase().includes('pol')) ||
+    voices[0];
 }
 
-function findVoiceByNames(voices, names){
-  const lower = voices.map(v => ({...v, _name: (v.name||'').toLowerCase()}));
-  for(const n of names){
-    const target = (n||'').toLowerCase();
-    const found = lower.find(v => v._name.includes(target));
-    if(found) return found;
-  }
-  return null;
-}
-function findByLangs(voices, prefixes){
-  const lower = voices.map(v => ({...v, _lang: (v.lang||'').toLowerCase()}));
-  for(const p of prefixes){
-    const pref = (p||'').toLowerCase();
-    const found = lower.find(v => v._lang.startsWith(pref));
-    if(found) return found;
-  }
-  return null;
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = initVoices;
+  initVoices();
 }
 
-function initVoices(){
-  if(!window.speechSynthesis) return;
-  const voices = getVoicesSafe();
-  // EN: konkretne głosy -> język -> fallback
-  ttsEN =
-    findVoiceByNames(voices, EN_VOICE_PREFERRED) ||
-    findByLangs(voices, ['en-GB','en-US','en']) ||
-    voices[0] ||
-    null;
-
-  // PL: konkretne głosy -> język -> fallback
-  ttsPL =
-    findVoiceByNames(voices, PL_VOICE_PREFERRED) ||
-    findByLangs(voices, ['pl-PL','pl']) ||
-    voices.find(v => (v.lang||'').toLowerCase().includes('pl')) ||
-    voices[0] ||
-    null;
-}
-
-// Zwraca wyłącznie głos EN albo PL (oddzielny lektor na każdy język)
-function pickVoice(langPrefix){
-  const isPL = (langPrefix || '').toLowerCase().startsWith('pl');
-  if(!ttsEN || !ttsPL) initVoices();
-  return isPL ? (ttsPL || ttsEN) : (ttsEN || ttsPL);
-}
-
-// Czekanie na załadowanie głosów (Chrome/Safari bywa kapryśny)
-function speak(text, langPrefix, attempt=0){
-  if(!window.speechSynthesis) return;
-  const synth = window.speechSynthesis;
-  const voices = getVoicesSafe();
-
-  // Jeśli lista głosów pusta — spróbuj odpytać i ponowić po chwili
-  if(!voices.length && attempt < 8){
-    synth.getVoices(); // "kickstart"
-    setTimeout(()=>speak(text, langPrefix, attempt+1), 150);
-    return;
-  }
-
-  if(!ttsEN || !ttsPL) initVoices();
-
+function speakEN(text) {
+  if (!voiceEN) initVoices();
   const u = new SpeechSynthesisUtterance(text);
-  const v = pickVoice(langPrefix);
-
-  if(v){
-    u.voice = v;
-    u.lang = v.lang || ((langPrefix||'').toLowerCase().startsWith('pl') ? 'pl-PL' : 'en-US');
-  } else {
-    // Jeśli nie znaleziono głosu, zostaw domyślny; ustaw lang tylko jako sugestię
-    if(langPrefix){
-      u.lang = (langPrefix||'').toLowerCase().startsWith('pl') ? 'pl-PL' : 'en-US';
-    }
-  }
-
+  u.voice = voiceEN;
   u.rate = 0.95;
   u.pitch = 1.0;
-
-  // Cancel tuż przed speak bywa "zjadane" w Safari — dajemy małe opóźnienie
-  try{ synth.cancel(); }catch(e){}
-  setTimeout(()=>{ try{ synth.speak(u); }catch(e){} }, 0);
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
 }
 
-document.getElementById('btnTTSen').onclick = ()=> current? speak(current.qLang==='en'? current.q : current.a, 'en'):null;
-document.getElementById('btnTTSpl').onclick = ()=> current? speak(current.qLang==='en'? current.a : current.q, 'pl'):null;
-document.getElementById('speakPrompt').onclick = ()=> current? speak(current.q, current.qLang==='en'?'en':'pl'):null;
+function speakPL(text) {
+  if (!voicePL) initVoices();
+  const u = new SpeechSynthesisUtterance(text);
+  u.voice = voicePL;
+  u.rate = 0.95;
+  u.pitch = 1.0;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+// przyciski odsłuchu
+document.getElementById('btnTTSen').onclick = () =>
+  current ? speakEN(current.qLang === 'en' ? current.q : current.a) : null;
+document.getElementById('btnTTSpl').onclick = () =>
+  current ? speakPL(current.qLang === 'en' ? current.a : current.q) : null;
+document.getElementById('speakPrompt').onclick = () =>
+  current ? (current.qLang === 'en' ? speakEN(current.q) : speakPL(current.q)) : null;
+
 
 // === Losowanie pytań ===
 function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
