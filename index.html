@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -260,16 +261,88 @@ function syncChips(containerId){
 syncChips('scopeRow');
 syncChips('modeRow');
 
-// === TTS ===
-function pickVoice(langPrefix){
-  const voices = window.speechSynthesis.getVoices();
-  return voices.find(v=>v.lang && v.lang.toLowerCase().startsWith(langPrefix)) || voices[0];
+// === TTS — oddzielne, konkretne głosy EN i PL ===
+const EN_VOICE_PREFERRED = [
+  'Google UK English Female',
+  'Google US English',
+  'Google UK English Male',
+  'Google English',
+  'Samantha',
+  'Daniel',
+  'Microsoft Aria Online (Natural) - English (United States)',
+  'Microsoft Zira Desktop - English (United States)',
+  'Microsoft David Desktop - English (United States)'
+];
+
+const PL_VOICE_PREFERRED = [
+  'Google polski',
+  'Google Polish',
+  'Microsoft Paulina - Polish (Poland)',
+  'Microsoft Paulina Desktop - Polish (Poland)',
+  'Maja',
+  'Ewa',
+  'Jacek',
+  'Zosia',
+  'Zofia'
+];
+
+function findVoiceByNames(voices, names){
+  const lower = voices.map(v => ({...v, _name: (v.name||'').toLowerCase()}));
+  for(const n of names){
+    const target = (n||'').toLowerCase();
+    const found = lower.find(v => v._name.includes(target));
+    if(found) return found;
+  }
+  return null;
 }
+function findByLangs(voices, prefixes){
+  const lower = voices.map(v => ({...v, _lang: (v.lang||'').toLowerCase()}));
+  for(const p of prefixes){
+    const pref = (p||'').toLowerCase();
+    const found = lower.find(v => v._lang.startsWith(pref));
+    if(found) return found;
+  }
+  return null;
+}
+
+function initVoices(){
+  if(!window.speechSynthesis) return;
+  const voices = window.speechSynthesis.getVoices() || [];
+  // EN: konkretne głosy -> język -> fallback
+  ttsEN =
+    findVoiceByNames(voices, EN_VOICE_PREFERRED) ||
+    findByLangs(voices, ['en-GB','en-US','en']) ||
+    voices[0] ||
+    null;
+
+  // PL: konkretne głosy -> język -> fallback
+  ttsPL =
+    findVoiceByNames(voices, PL_VOICE_PREFERRED) ||
+    findByLangs(voices, ['pl-PL','pl']) ||
+    voices.find(v => (v.lang||'').toLowerCase().includes('pl')) ||
+    voices[0] ||
+    null;
+}
+
+// Zwraca wyłącznie głos EN albo PL (oddzielny lektor na każdy język)
+function pickVoice(langPrefix){
+  const isPL = (langPrefix || '').toLowerCase().startsWith('pl');
+  if(!ttsEN || !ttsPL) initVoices();
+  return isPL ? (ttsPL || ttsEN) : (ttsEN || ttsPL);
+}
+
 function speak(text, langPrefix){
   if(!window.speechSynthesis) return;
   const u = new SpeechSynthesisUtterance(text);
   const v = pickVoice(langPrefix);
-  if(v) u.voice = v; u.rate = 0.95; u.pitch = 1.0;
+  if(v){
+    u.voice = v;
+    u.lang = v.lang || ((langPrefix || '').toLowerCase().startsWith('pl') ? 'pl-PL' : 'en-US');
+  } else {
+    u.lang = (langPrefix || '').toLowerCase().startsWith('pl') ? 'pl-PL' : 'en-US';
+  }
+  u.rate = 0.95;
+  u.pitch = 1.0;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
 }
@@ -437,8 +510,14 @@ document.getElementById('speakFront').onclick = ()=>{ const it=flashItems[flashI
 
 document.getElementById('speakBack').onclick = ()=>{ const it=flashItems[flashIndex]; speak(it.pl,'pl'); };
 
-// Prefetch voices
-if(window.speechSynthesis){ window.speechSynthesis.onvoiceschanged = ()=>{}; }
+// Prefetch voices — inicjalizacja oddzielnych lektorów EN/PL
+if(window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged = initVoices;
+  // Spróbuj także zainicjalizować od razu (na niektórych przeglądarkach)
+  window.speechSynthesis.getVoices();
+  initVoices();
+}
 </script>
 </body>
 </html>
+```
