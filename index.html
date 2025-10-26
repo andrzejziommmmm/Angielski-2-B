@@ -1,141 +1,485 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>KidsCan! 2 — Trener słówek KLASA 2B</title>
-<style>
-:root{
---bg:#fff8f0; --card:#ffffff; --ink:#1b1b1b; --muted:#666; --accent:#6c5ce7; --accent2:#00b894; --wrong:#ff7675; --right:#55efc4;
-}
-html,body{height:100%;}
-body{margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", sans-serif; background:var(--bg); color:var(--ink);}    
-.app{max-width:1100px; margin:0 auto; padding:16px 16px 28px;}
-.header{display:flex; gap:12px; align-items:center; justify-content:space-between;}
-.title{display:flex; align-items:center; gap:10px;}
-.title h1{margin:0; font-size:clamp(22px, 3vw, 32px);}    
-.title .badge{background:var(--accent); color:white; padding:6px 10px; border-radius:999px; font-weight:700; font-size:14px;}
-.panel{display:grid; gap:12px; grid-template-columns: 1fr;}
-@media(min-width:900px){ .panel{grid-template-columns: 340px 1fr;} }
-.card{background:var(--card); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,.06);}    
-.section-title{font-weight:800; margin:4px 0 10px; font-size:18px;}
-.row{display:flex; flex-wrap:wrap; gap:8px;}
-.select, select{width:100%; padding:12px 14px; border-radius:12px; border:2px solid #eee; font-size:16px;}
-.chip{display:inline-flex; align-items:center; gap:8px; background:#f3f4f6; border:2px solid #e5e7eb; padding:10px 12px; border-radius:14px; cursor:pointer; user-select:none; font-weight:700;}
-.chip input{display:none}
-.chip.active{background:#eaf7ff; border-color:#b6e3ff}
-.mode{display:grid; grid-template-columns:repeat(2,1fr); gap:8px;}
-.mode .chip{justify-content:center}
-.btn{appearance:none; border:none; padding:14px 16px; font-weight:900; border-radius:16px; cursor:pointer; font-size:16px;}
-.btn-primary{background:var(--accent); color:white;}
-.btn-secondary{background:#ffeaa7;}
-.btn-ghost{background:#f3f4f6;}
-.btn:disabled{opacity:.5; cursor:not-allowed}
-.quiz{display:grid; gap:12px;}
-.prompt{font-size:clamp(22px,2.6vw,30px); font-weight:900;}
-.choices{display:grid; gap:8px; grid-template-columns:1fr;}
-@media(min-width:700px){.choices{grid-template-columns:repeat(2,1fr);} }
-.choice{padding:14px; border-radius:14px; border:2px solid #eee; background:white; font-size:18px; text-align:center; cursor:pointer;}
-.choice:hover{transform:translateY(-1px);}
-.choice.correct{border-color:var(--right); background:#ecfff9}
-.choice.wrong{border-color:var(--wrong); background:#fff1f1}
-.progress{display:flex; align-items:center; gap:8px; font-weight:700;}
-.bar{flex:1; height:10px; background:#eee; border-radius:999px; overflow:hidden}
-.bar > i{display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--accent2));}
-.tiny{color:var(--muted); font-size:12px;}
-.flex{display:flex; gap:8px; align-items:center}
-.pill{border-radius:999px; background:#f3f4f6; padding:6px 10px; font-weight:800;}
-.flashcard{display:grid; place-items:center; height:240px; border-radius:18px; border:2px dashed #e5e7eb; background:white; cursor:pointer; perspective:1000px;}
-.flash-inner{position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .5s ease; display:grid; place-items:center;}
-.flash-inner.flipped{transform:rotateY(180deg)}
-.face{position:absolute; inset:0; backface-visibility:hidden; display:grid; place-items:center; font-size:28px; font-weight:900; padding:18px;}
-.back{transform:rotateY(180deg)}
-.sound-btn{background:#e8f5ff; border-radius:999px; padding:10px 12px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-weight:800;}
-.footer{margin-top:14px; color:#666; font-size:12px;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KidsCan! 2 — Trener słówek KLASA 2B</title>
+  <style>
+    :root{
+      --bg:#fff8f0; --card:#ffffff; --ink:#1b1b1b; --muted:#666; --accent:#6c5ce7; --accent2:#00b894; --wrong:#ff7675; --right:#55efc4;
+    }
+    html,body{height:100%;}
+    body{margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", sans-serif; background:var(--bg); color:var(--ink);}
+    .app{max-width:1100px; margin:0 auto; padding:16px 16px 28px;}
+    .header{display:flex; gap:12px; align-items:center; justify-content:space-between;}
+    .title{display:flex; align-items:center; gap:10px;}
+    .title h1{margin:0; font-size:clamp(22px, 3vw, 32px);}
+    .title .badge{background:var(--accent); color:white; padding:6px 10px; border-radius:999px; font-weight:700; font-size:14px;}
+    .panel{display:grid; gap:12px; grid-template-columns: 1fr;}
+    @media(min-width:900px){
+      .panel{grid-template-columns: 340px 1fr;}
+    }
+    .card{background:var(--card); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,.06);}
+    .section-title{font-weight:800; margin:4px 0 10px; font-size:18px;}
+    .row{display:flex; flex-wrap:wrap; gap:8px;}
+    .select, select{width:100%; padding:12px 14px; border-radius:12px; border:2px solid #eee; font-size:16px;}
+    .chip{display:inline-flex; align-items:center; gap:8px; background:#f3f4f6; border:2px solid #e5e7eb; padding:10px 12px; border-radius:14px; cursor:pointer; user-select:none; font-weight:700;}
+    .chip input{display:none}
+    .chip.active{background:#eaf7ff; border-color:#b6e3ff}
+    .mode{display:grid; grid-template-columns:repeat(2,1fr); gap:8px;}
+    .mode .chip{justify-content:center}
+    .btn{appearance:none; border:none; padding:14px 16px; font-weight:900; border-radius:16px; cursor:pointer; font-size:16px;}
+    .btn-primary{background:var(--accent); color:white;}
+    .btn-secondary{background:#ffeaa7;}
+    .btn-ghost{background:#f3f4f6;}
+    .btn:disabled{opacity:.5; cursor:not-allowed}
+
+    .quiz{display:grid; gap:12px;}
+    .prompt{font-size:clamp(22px,2.6vw,30px); font-weight:900;}
+    .choices{display:grid; gap:8px; grid-template-columns:1fr;}
+    @media(min-width:700px){.choices{grid-template-columns:repeat(2,1fr);} }
+    .choice{padding:14px; border-radius:14px; border:2px solid #eee; background:white; font-size:18px; text-align:center; cursor:pointer;}
+    .choice:hover{transform:translateY(-1px);}
+    .choice.correct{border-color:var(--right); background:#ecfff9}
+    .choice.wrong{border-color:var(--wrong); background:#fff1f1}
+    .progress{display:flex; align-items:center; gap:8px; font-weight:700;}
+    .bar{flex:1; height:10px; background:#eee; border-radius:999px; overflow:hidden}
+    .bar > i{display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--accent2));}
+    .tiny{color:var(--muted); font-size:12px;}
+
+    .flex{display:flex; gap:8px; align-items:center}
+
+    .pill{border-radius:999px; background:#f3f4f6; padding:6px 10px; font-weight:800;}
+
+    .flashcard{display:grid; place-items:center; height:240px; border-radius:18px; border:2px dashed #e5e7eb; background:white; cursor:pointer; perspective:1000px;}
+    .flash-inner{position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .5s ease; display:grid; place-items:center;}
+    .flash-inner.flipped{transform:rotateY(180deg)}
+    .face{position:absolute; inset:0; backface-visibility:hidden; display:grid; place-items:center; font-size:28px; font-weight:900; padding:18px;}
+    .back{transform:rotateY(180deg)}
+
+    .sound-btn{background:#e8f5ff; border-radius:999px; padding:10px 12px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-weight:800;}
+
+    .footer{margin-top:14px; color:#666; font-size:12px;}
+  </style>
 </head>
 <body>
-<div class="app">
-<div class="header">
-  <div class="title">
-     <h1>Klasa 2B  Trener słówek</h1>
-  </div>
-  <div style="display:flex; gap:8px; align-items:center;">
-    <label class="pill">Język:</label>
-    <select id="langSelect" class="select" style="width:180px;">
-      <option value="en">English (EN)</option>
-      <option value="de">Deutsch (DE)</option>
-    </select>
-  </div>
-</div>
-
-<div class="panel">
-  <aside class="card">
-    <div class="section-title">1) Wybierz rozdział</div>
-    <select id="chapterSelect" class="select"></select>
-
-    <div class="section-title">2) Zakres słownictwa</div>
-    <div class="row" id="scopeRow">
-      <label class="chip"><input type="radio" name="scope" value="basic" checked/> Podstawowe 🌱</label>
-      <label class="chip"><input type="radio" name="scope" value="extended"/> Rozszerzone 🌿</label>
-      <label class="chip"><input type="radio" name="scope" value="both"/> Oba ✅</label>
-    </div>
-
-    <div class="section-title">3) Tryb nauki</div>
-    <div class="mode" id="modeRow">
-      <label class="chip"><input type="radio" name="mode" value="en2pl"/> L1 → PL</label>
-      <label class="chip"><input type="radio" name="mode" value="pl2en"/> PL → L1</label>
-      <label class="chip"><input type="radio" name="mode" value="spelling"/> Pisownia (L1 ✍️)</label>
-      <label class="chip active"><input type="radio" name="mode" value="mix" checked/> MIX (domyślnie)</label>
-    </div>
-
-    <div class="section-title">4) Dodatkowe opcje</div>
-    <div class="row">
-      <button class="btn btn-ghost" id="btnTTSl1" title="Odsłuchaj w języku L1">🔊 L1</button>
-      <button class="btn btn-ghost" id="btnTTSpl" title="Odsłuchaj po polsku">🔊 PL</button>
-      <button class="btn btn-secondary" id="btnFlash">🃏 Tryb fiszek</button>
-    </div>
-
-    <div class="row" style="margin-top:8px">
-      <button class="btn btn-primary" id="btnStart">▶️ Start testu</button>
-      <button class="btn" id="btnReset">🔄 Reset</button>
-    </div>
-  </aside>
-
-  <main class="card">
-    <div id="quizView" class="quiz">
-      <div class="progress"><div class="bar"><i id="barFill"></i></div><span id="counter">0/0</span></div>
-      <div class="prompt" id="prompt">Wybierz język i rozdział, potem kliknij Start testu.</div>
-      <div class="row">
-        <span class="sound-btn" id="speakPrompt">🔊 Przeczytaj</span>
+  <div class="app">
+    <div class="header">
+      <div class="title">
+         <h1>Klasa 2B  Trener słówek</h1>
+      
       </div>
-      <div id="choices" class="choices"></div>
-      <div id="spellingBox" style="display:none" class="row">
-        <input id="spellingInput" class="select" placeholder="Wpisz…"/>
-        <button class="btn btn-primary" id="checkSpell">Sprawdź</button>
+  
       </div>
-      <div class="row">
-        <button class="btn btn-secondary" id="btnNext" disabled>Następne ➡️</button>
-      </div>
-      <div class="tiny" id="feedback"></div>
     </div>
 
-    <div id="flashView" style="display:none">
-      <div class="progress"><div class="bar"><i id="barFillFlash"></i></div><span id="counterFlash">0/0</span></div>
-      <div class="flashcard" id="flashcard" title="Kliknij, aby obrócić">
-        <div class="flash-inner" id="flashInner">
-          <div class="face front" id="flashFront">😺</div>
-          <div class="face back" id="flashBack">—</div>
+    <div class="panel">
+      <aside class="card">
+        <div class="section-title">1) Wybierz rozdział</div>
+        <select id="chapterSelect" class="select"></select>
+
+        <div class="section-title">2) Zakres słownictwa</div>
+        <div class="row" id="scopeRow">
+          <label class="chip"><input type="radio" name="scope" value="basic" checked/> Podstawowe 🌱</label>
+          <label class="chip"><input type="radio" name="scope" value="extended"/> Rozszerzone 🌿</label>
+          <label class="chip"><input type="radio" name="scope" value="both"/> Oba ✅</label>
         </div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <button class="btn btn-ghost" id="speakFront">🔊 Przód</button>
-        <button class="btn btn-ghost" id="speakBack">🔊 Tył</button>
-        <button class="btn btn-secondary" id="markHard">🙈 Jeszcze</button>
-        <button class="btn btn-primary" id="markEasy">😺 Umiem</button>
-      </div>
-    </div>
-  </main>
-</div>
 
-<div class="footer"> Andrzej & Marcin Dane słownictwa na podstawie planu „Kids Can! 2” (rozdziały i zakres podstawowy/rozszerzony). Projekt edukacyjny —
+        <div class="section-title">3) Tryb nauki</div>
+        <div class="mode" id="modeRow">
+          <label class="chip"><input type="radio" name="mode" value="en2pl"/> EN → PL</label>
+          <label class="chip"><input type="radio" name="mode" value="pl2en"/> PL → EN</label>
+          <label class="chip"><input type="radio" name="mode" value="spelling"/> Pisownia (EN ✍️)</label>
+          <label class="chip active"><input type="radio" name="mode" value="mix" checked/> MIX (domyślnie)</label>
+        </div>
+
+        <div class="section-title">4) Dodatkowe opcje</div>
+        <div class="row">
+          <button class="btn btn-ghost" id="btnTTSen" title="Odsłuchaj po angielsku">🔊 EN</button>
+          <button class="btn btn-ghost" id="btnTTSpl" title="Odsłuchaj po polsku">🔊 PL</button>
+          <button class="btn btn-secondary" id="btnFlash">🃏 Tryb fiszek</button>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <button class="btn btn-primary" id="btnStart">▶️ Start testu</button>
+          <button class="btn" id="btnReset">🔄 Reset</button>
+        </div>
+      </aside>
+
+      <main class="card">
+        <div id="quizView" class="quiz">
+          <div class="progress"><div class="bar"><i id="barFill"></i></div><span id="counter">0/0</span></div>
+          <div class="prompt" id="prompt">Wybierz rozdział i kliknij Start testu.</div>
+          <div class="row">
+            <span class="sound-btn" id="speakPrompt">🔊 Przeczytaj</span>
+          </div>
+          <div id="choices" class="choices"></div>
+          <div id="spellingBox" style="display:none" class="row">
+            <input id="spellingInput" class="select" placeholder="Wpisz po angielsku…"/>
+            <button class="btn btn-primary" id="checkSpell">Sprawdź</button>
+          </div>
+          <div class="row">
+            <button class="btn btn-secondary" id="btnNext" disabled>Następne ➡️</button>
+          </div>
+          <div class="tiny" id="feedback"></div>
+        </div>
+
+        <div id="flashView" style="display:none">
+          <div class="progress"><div class="bar"><i id="barFillFlash"></i></div><span id="counterFlash">0/0</span></div>
+          <div class="flashcard" id="flashcard" title="Kliknij, aby obrócić">
+            <div class="flash-inner" id="flashInner">
+              <div class="face front" id="flashFront">😺</div>
+              <div class="face back" id="flashBack">—</div>
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn btn-ghost" id="speakFront">🔊 Przód</button>
+            <button class="btn btn-ghost" id="speakBack">🔊 Tył</button>
+            <button class="btn btn-secondary" id="markHard">🙈 Jeszcze</button>
+            <button class="btn btn-primary" id="markEasy">😺 Umiem</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="footer"> Andrzej & Marcin Dane słownictwa na podstawie planu „Kids Can! 2” (rozdziały i zakres podstawowy/rozszerzony). Projekt edukacyjny — użytek własny w klasie/szkole. </div>
+  </div>
+
+<script>
+// === Dane słownictwa — ROZDZIAŁY ===
+// Każdy wpis: { en:"…", pl:"…" }
+const DATA = {
+  "Wstępny": {
+    basic: [
+      {en:"alphabet", pl:"alfabet"}, {en:"count to 20", pl:"liczyć do 20"},
+      {en:"days of the week", pl:"dni tygodnia"},
+      {en:"cloudy", pl:"pochmurno"}, {en:"cold", pl:"zimno"}, {en:"hot", pl:"gorąco"}, {en:"rainy", pl:"deszczowo"}, {en:"sunny", pl:"słonecznie"}, {en:"windy", pl:"wietrznie"}
+    ],
+    extended: [
+      {en:"What's your name?", pl:"Jak masz na imię?"}, {en:"How old are you?", pl:"Ile masz lat?"},
+      {en:"My favourite day is…", pl:"Mój ulubiony dzień to…"}
+    ]
+  },
+  "1. School": {
+    basic: [
+      {en:"classroom", pl:"klasa"}, {en:"computer room", pl:"pracownia komputerowa"}, {en:"corridor", pl:"korytarz"}, {en:"dining room", pl:"stołówka"}, {en:"gym", pl:"sala gimnastyczna"}, {en:"library", pl:"biblioteka"}, {en:"playground", pl:"plac zabaw"}, {en:"toilet", pl:"toaleta"},
+      {en:"behind", pl:"za"}, {en:"between", pl:"między"}, {en:"in front of", pl:"przed"}, {en:"next to", pl:"obok"}
+    ],
+    extended: [
+      {en:"line up", pl:"ustaw się w kolejce"}, {en:"listen to others", pl:"słuchaj innych"}, {en:"play nicely", pl:"baw się ładnie"}, {en:"put your hand up", pl:"podnieś rękę"}, {en:"wash your hands", pl:"umyj ręce"},
+      {en:"catch", pl:"łapać / berek"}, {en:"hide-and-seek", pl:"chowanego"}, {en:"hopscotch", pl:"klasy"}, {en:"monster tag", pl:"potworny berek"},
+      {en:"glue", pl:"klej"}, {en:"markers", pl:"pisaki"}, {en:"paints", pl:"farby"}, {en:"plasticine", pl:"plastelina"}, {en:"scissors", pl:"nożyczki"}, {en:"sticky tape", pl:"taśma klejąca"}
+    ]
+  },
+  "2. House": {
+    basic: [
+      {en:"attic", pl:"strych"}, {en:"bathroom", pl:"łazienka"}, {en:"bedroom", pl:"sypialnia"}, {en:"garage", pl:"garaż"}, {en:"garden", pl:"ogród"}, {en:"hall", pl:"hol/przedpokój"}, {en:"kitchen", pl:"kuchnia"}, {en:"living room", pl:"salon"},
+      {en:"flat", pl:"mieszkanie"}, {en:"house", pl:"dom"},
+      {en:"bed", pl:"łóżko"}, {en:"cooker", pl:"kuchenka"}, {en:"fridge", pl:"lodówka"}, {en:"shower", pl:"prysznic"}, {en:"sofa", pl:"sofa"}
+    ],
+    extended: [
+      {en:"fabric", pl:"tkanina"}, {en:"metal", pl:"metal"}, {en:"stone", pl:"kamień"}, {en:"straw", pl:"słoma"}, {en:"wood", pl:"drewno"},
+      {en:"caravan", pl:"przyczepa kempingowa"}, {en:"castle", pl:"zamek"}, {en:"cottage", pl:"chatka"}, {en:"houseboat", pl:"barka mieszkalna"},
+      {en:"armchair", pl:"fotel"}, {en:"bath", pl:"wanna"}, {en:"bookshelf", pl:"regał na książki"}, {en:"carpet", pl:"dywan"}, {en:"drawer", pl:"szuflada"}, {en:"table", pl:"stół"}
+    ]
+  },
+  "3. Clothes": {
+    basic: [
+      {en:"dress", pl:"sukienka"}, {en:"jacket", pl:"kurtka"}, {en:"jeans", pl:"dżinsy"}, {en:"skirt", pl:"spódnica"}, {en:"sweater", pl:"sweter"}, {en:"trainers", pl:"trampki"}, {en:"trousers", pl:"spodnie"}, {en:"T-shirt", pl:"koszulka"},
+      {en:"clean", pl:"czysty"}, {en:"dirty", pl:"brudny"}, {en:"new", pl:"nowy"}, {en:"old", pl:"stary"}
+    ],
+    extended: [
+      {en:"sunhat", pl:"kapelusz przeciwsłoneczny"}, {en:"apron", pl:"fartuch"}, {en:"P.E. kit", pl:"strój na WF"}, {en:"sweatshirt", pl:"bluza"}, {en:"school uniform", pl:"mundurek"},
+      {en:"hoodie", pl:"bluza z kapturem"}, {en:"shorts", pl:"krótkie spodenki"}, {en:"socks", pl:"skarpetki"}, {en:"swimsuit", pl:"strój kąpielowy"}, {en:"vest", pl:"podkoszulek"}, {en:"wellies", pl:"kalosze"}
+    ]
+  },
+  "4. Appearance": {
+    basic: [
+      {en:"beard", pl:"broda"}, {en:"curly hair", pl:"kręcone włosy"}, {en:"dark hair", pl:"ciemne włosy"}, {en:"fair hair", pl:"jasne włosy"}, {en:"long hair", pl:"długie włosy"}, {en:"moustache", pl:"wąsy"}, {en:"short hair", pl:"krótkie włosy"}, {en:"straight hair", pl:"proste włosy"},
+      {en:"crown", pl:"korona"}, {en:"earrings", pl:"kolczyki"}, {en:"glasses", pl:"okulary"}, {en:"necklace", pl:"naszyjnik"}, {en:"wig", pl:"peruka"},
+      {en:"circle", pl:"koło"}, {en:"line", pl:"linia"}, {en:"oval", pl:"owal"}
+    ],
+    extended: [
+      {en:"birthday party", pl:"urodziny"}, {en:"carnival", pl:"karnawał"}, {en:"Halloween", pl:"Halloween"}, {en:"school play", pl:"przedstawienie szkolne"},
+      {en:"cook", pl:"kucharz"}, {en:"dancer", pl:"tancerz"}, {en:"driver", pl:"kierowca"}, {en:"painter", pl:"malarz"}, {en:"police officer", pl:"policjant"}, {en:"vet", pl:"weterynarz"}
+    ]
+  },
+  "5. Camp & Free time": {
+    basic: [
+      {en:"climb a tree", pl:"wspinać się na drzewo"}, {en:"do yoga", pl:"ćwiczyć jogę"}, {en:"go for a walk", pl:"iść na spacer"}, {en:"play basketball", pl:"grać w koszykówkę"}, {en:"play table tennis", pl:"grać w tenisa stołowego"}, {en:"play volleyball", pl:"grać w siatkówkę"}, {en:"sail a boat", pl:"płynąć łódką/żeglować"}, {en:"swim in the lake", pl:"pływać w jeziorze"},
+      {en:"make a model", pl:"składać model"}, {en:"play a board game", pl:"grać w grę planszową"}, {en:"play the guitar", pl:"grać na gitarze"}, {en:"read a comic", pl:"czytać komiks"}
+    ],
+    extended: [
+      {en:"bones", pl:"kości"}, {en:"joints", pl:"stawy"}, {en:"muscles", pl:"mięśnie"}, {en:"skeleton", pl:"szkielet"},
+      {en:"cook on a campfire", pl:"gotować na ognisku"}, {en:"make a den", pl:"zbudować bazę/szałas"}, {en:"sing songs", pl:"śpiewać piosenki"}, {en:"tell scary stories", pl:"opowiadać straszne historie"},
+      {en:"have a picnic", pl:"mieć piknik"}, {en:"go kayaking", pl:"pływać kajakiem"}, {en:"listen to music", pl:"słuchać muzyki"}, {en:"play cards", pl:"grać w karty"}, {en:"sleep in a tent", pl:"spać w namiocie"}, {en:"take photos", pl:"robić zdjęcia"}
+    ]
+  },
+  "6. Summer & City": {
+    basic: [
+      {en:"aquarium", pl:"akwarium"}, {en:"beach", pl:"plaża"}, {en:"funfair", pl:"wesołe miasteczko"}, {en:"mountains", pl:"góry"}, {en:"safari park", pl:"park safari"}, {en:"skate park", pl:"skatepark"}, {en:"village", pl:"wieś"}, {en:"water park", pl:"aquapark"},
+      {en:"by boat", pl:"łodzią"}, {en:"by bus", pl:"autobusem"}, {en:"by car", pl:"samochodem"}, {en:"by train", pl:"pociągiem"}, {en:"on foot", pl:"pieszo"}
+    ],
+    extended: [
+      {en:"by bike", pl:"rowerem"}, {en:"by ferry", pl:"promem"}, {en:"by underground train", pl:"metrem"},
+      {en:"do crafts", pl:"robić prace plastyczne"}, {en:"dress up", pl:"przebierać się"}, {en:"play in the playground", pl:"bawić się na placu zabaw"}, {en:"visit a castle", pl:"zwiedzać zamek"},
+      {en:"bakery", pl:"piekarnia"}, {en:"bookshop", pl:"księgarnia"}, {en:"clothes shop", pl:"sklep z ubraniami"}, {en:"greengrocer's", pl:"warzywniak"}, {en:"pet shop", pl:"sklep zoologiczny"}, {en:"toy shop", pl:"sklep z zabawkami"}
+    ]
+  }
+};
+
+// === Stan aplikacji ===
+let queue = []; // kolejka pytań
+let current = null; // bieżące pytanie {q, a, item}
+let answered = 0, correct = 0;
+let wrongStack = []; // błędne odpowiedzi do powtórki
+let mode = 'mix';
+let ttsEN = null, ttsPL = null;
+let flashIndex = 0; let flashItems = [];
+
+// === Inicjalizacja ===
+const chapterSelect = document.getElementById('chapterSelect');
+Object.keys(DATA).forEach((name, idx)=>{
+  const opt = document.createElement('option');
+  opt.value = name; opt.textContent = name; if(idx===0) opt.selected=true; chapterSelect.appendChild(opt);
+});
+
+// radio chips UI
+function syncChips(containerId){
+  const el = document.getElementById(containerId);
+  el.querySelectorAll('.chip').forEach(ch=>{
+    ch.addEventListener('click', ()=>{
+      el.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      ch.classList.add('active');
+      const input = ch.querySelector('input'); input.checked = true;
+      if(containerId==='modeRow'){ mode = input.value; document.getElementById('spellingBox').style.display = (mode==='spelling')?'grid':'none'; }
+    });
+  });
+}
+
+syncChips('scopeRow');
+syncChips('modeRow');
+
+// === TTS ===
+// oddzielny angielski i polski lektor
+let voiceEN = null;
+let voicePL = null;
+
+function initVoices() {
+  const voices = window.speechSynthesis.getVoices();
+  // wybierz angielski (preferuj naturalne głosy)
+  voiceEN =
+    voices.find(v => v.lang.startsWith('en-GB')) ||
+    voices.find(v => v.lang.startsWith('en-US')) ||
+    voices.find(v => v.lang.toLowerCase().includes('en')) ||
+    voices[0];
+  // wybierz polski
+  voicePL =
+    voices.find(v => v.lang.startsWith('pl-')) ||
+    voices.find(v => v.lang.toLowerCase().includes('pol')) ||
+    voices[0];
+}
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = initVoices;
+  initVoices();
+}
+
+function speakEN(text) {
+  if (!voiceEN) initVoices();
+  const u = new SpeechSynthesisUtterance(text);
+  u.voice = voiceEN;
+  u.rate = 0.95;
+  u.pitch = 1.0;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+function speakPL(text) {
+  if (!voicePL) initVoices();
+  const u = new SpeechSynthesisUtterance(text);
+  u.voice = voicePL;
+  u.rate = 0.95;
+  u.pitch = 1.0;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+// przyciski odsłuchu
+document.getElementById('btnTTSen').onclick = () =>
+  current ? speakEN(current.qLang === 'en' ? current.q : current.a) : null;
+document.getElementById('btnTTSpl').onclick = () =>
+  current ? speakPL(current.qLang === 'en' ? current.a : current.q) : null;
+document.getElementById('speakPrompt').onclick = () =>
+  current ? (current.qLang === 'en' ? speakEN(current.q) : speakPL(current.q)) : null;
+
+
+// === Losowanie pytań ===
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+function buildPool(){
+  const chapter = chapterSelect.value;
+  const scope = document.querySelector('input[name="scope"]:checked').value; // basic|extended|both
+  let pool = [];
+  const src = DATA[chapter];
+  if(!src) return [];
+  if(scope==='basic' || scope==='both') pool = pool.concat(src.basic);
+  if(scope==='extended' || scope==='both') pool = pool.concat(src.extended);
+  return pool;
+}
+
+function makeQuestion(item){
+  // Based on mode, generate: {q,a,choices[], qLang:'en'|'pl'}
+  const m = mode==='mix' ? ['en2pl','pl2en','spelling'][Math.floor(Math.random()*3)] : mode;
+  const pool = buildPool();
+  if(m==='spelling'){
+    return {q:item.en, a:item.en, qLang:'en', type:'spelling', item};
+  }
+  if(m==='en2pl'){
+    const distractors = shuffle(pool.filter(x=>x!==item)).slice(0,3).map(x=>x.pl);
+    return {q:item.en, a:item.pl, qLang:'en', type:'choice', choices:shuffle([item.pl, ...distractors]), item};
+  } else {
+    const distractors = shuffle(pool.filter(x=>x!==item)).slice(0,3).map(x=>x.en);
+    return {q:item.pl, a:item.en, qLang:'pl', type:'choice', choices:shuffle([item.en, ...distractors]), item};
+  }
+}
+
+function startQuiz(){
+  queue = shuffle(buildPool().slice());
+  answered = 0; correct = 0; wrongStack = [];
+  document.getElementById('feedback').textContent='';
+  nextQuestion();
+}
+
+function nextQuestion(){
+  document.getElementById('btnNext').disabled = true;
+  document.getElementById('spellingInput').value='';
+  const progressBar = document.getElementById('barFill');
+  const counter = document.getElementById('counter');
+  if(queue.length===0){
+    if(wrongStack.length){ // powtórka
+      queue = shuffle(wrongStack.slice()); wrongStack = [];
+      document.getElementById('feedback').innerHTML = '🔁 Powtórka z błędów! Dobra robota, działamy dalej.';
+    } else {
+      document.getElementById('prompt').textContent = `Koniec! ✅ Poprawnych: ${correct}`;
+      document.getElementById('choices').innerHTML='';
+      document.getElementById('spellingBox').style.display = (mode==='spelling')?'grid':'none';
+      progressBar.style.width = '100%'; counter.textContent = '✔️';
+      current = null; return;
+    }
+  }
+  const item = queue.shift();
+  current = makeQuestion(item);
+  renderQuestion(current);
+  progressBar.style.width = `${(answered/(answered+queue.length+wrongStack.length))*100}%`;
+  counter.textContent = `${answered}/${answered+queue.length+wrongStack.length}`;
+}
+
+function renderQuestion(q){
+  const prompt = document.getElementById('prompt');
+  const choices = document.getElementById('choices');
+  const sb = document.getElementById('spellingBox');
+  const feedback = document.getElementById('feedback');
+  feedback.textContent = '';
+
+  if(q.type==='choice'){
+    sb.style.display = 'none';
+    choices.innerHTML = '';
+    prompt.textContent = q.q;
+    q.choices.forEach(txt=>{
+      const btn = document.createElement('button');
+      btn.className = 'choice'; btn.textContent = txt;
+      btn.onclick = ()=> selectChoice(btn, txt===q.a);
+      choices.appendChild(btn);
+    });
+  } else { // spelling
+    choices.innerHTML = '';
+    sb.style.display = 'grid';
+    prompt.textContent = `Napisz po angielsku: ${q.item.pl}`;
+  }
+}
+
+function selectChoice(el, ok){
+  const all = Array.from(document.querySelectorAll('.choice'));
+  all.forEach(b=>b.disabled=true);
+  el.classList.add(ok?'correct':'wrong');
+  if(!ok){
+    // zaznacz poprawną
+    const correctBtn = all.find(b=>b.textContent===current.a);
+    if(correctBtn) correctBtn.classList.add('correct');
+    wrongStack.push(current.item);
+  } else {
+    correct++;
+  }
+  answered++;
+  document.getElementById('btnNext').disabled = false;
+}
+
+// Spelling check
+function norm(s){ return s.trim().toLowerCase().replace(/\s+/g,' '); }
+function checkSpelling(){
+  const val = document.getElementById('spellingInput').value;
+  const fb = document.getElementById('feedback');
+  if(!val) return;
+  const ok = norm(val)===norm(current.a);
+  if(ok){ fb.textContent = '✅ Super!'; correct++; } else { fb.textContent = `❌ Powinno być: "${current.a}"`; wrongStack.push(current.item); }
+  answered++; document.getElementById('btnNext').disabled = false;
+}
+
+document.getElementById('checkSpell').onclick = checkSpelling;
+document.getElementById('spellingInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ checkSpelling(); }});
+
+document.getElementById('btnNext').onclick = nextQuestion;
+document.getElementById('btnStart').onclick = startQuiz;
+document.getElementById('btnReset').onclick = ()=>{ queue=[]; wrongStack=[]; answered=0; correct=0; current=null; document.getElementById('prompt').textContent='Wybierz rozdział i kliknij Start testu.'; document.getElementById('choices').innerHTML=''; document.getElementById('counter').textContent='0/0'; document.getElementById('barFill').style.width='0%'; };
+
+// === Tryb fiszek ===
+const flashView = document.getElementById('flashView');
+const quizView = document.getElementById('quizView');
+
+document.getElementById('btnFlash').onclick = ()=>{
+  if(flashView.style.display==='none'){ enterFlash(); } else { exitFlash(); }
+};
+
+function enterFlash(){
+  flashItems = shuffle(buildPool().slice());
+  flashIndex = 0; renderFlash();
+  quizView.style.display='none'; flashView.style.display='block';
+}
+function exitFlash(){ quizView.style.display='grid'; flashView.style.display='none'; }
+
+function renderFlash(){
+  const total = flashItems.length; const cur = flashItems[flashIndex] || {en:'—', pl:'—'};
+  document.getElementById('flashFront').textContent = cur.en;
+  document.getElementById('flashBack').textContent = cur.pl;
+  document.getElementById('barFillFlash').style.width = `${(flashIndex/Math.max(1,total))*100}%`;
+  document.getElementById('counterFlash').textContent = `${flashIndex+1}/${total}`;
+  document.getElementById('flashInner').classList.remove('flipped');
+}
+
+document.getElementById('flashcard').onclick = ()=>{
+  document.getElementById('flashInner').classList.toggle('flipped');
+};
+
+document.getElementById('markEasy').onclick = ()=>{ if(flashIndex < flashItems.length-1){ flashIndex++; renderFlash(); } };
+
+document.getElementById('markHard').onclick = ()=>{
+  // Dołóż bieżącą fiszkę na koniec talijki, żeby wróciła
+  const it = flashItems[flashIndex]; flashItems.push(it);
+  flashIndex++; renderFlash();
+};
+
+document.getElementById('speakFront').onclick = ()=>{ const it=flashItems[flashIndex]; speak(it.en,'en'); };
+
+document.getElementById('speakBack').onclick = ()=>{ const it=flashItems[flashIndex]; speak(it.pl,'pl'); };
+
+// Prefetch voices — inicjalizacja oddzielnych lektorów EN/PL
+if(window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged = initVoices;
+  // Kickstart pobierania listy głosów (często potrzebne w Chrome/Safari)
+  window.speechSynthesis.getVoices();
+  setTimeout(initVoices, 0);
+}
+</script>
+</body>
+</html>
