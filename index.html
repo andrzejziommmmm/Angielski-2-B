@@ -9,17 +9,17 @@
       --bg:#fff8f0; --card:#ffffff; --ink:#1b1b1b; --muted:#666; --accent:#6c5ce7; --accent2:#00b894; --wrong:#ff7675; --right:#55efc4;
     }
     html,body{height:100%;}
-    body{margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", sans-serif; background:var(--bg); color:var(--ink);}
+    body{margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", sans-serif; background:var(--bg); color:var(--ink);}    
     .app{max-width:1100px; margin:0 auto; padding:16px 16px 28px;}
     .header{display:flex; gap:12px; align-items:center; justify-content:space-between;}
     .title{display:flex; align-items:center; gap:10px;}
-    .title h1{margin:0; font-size:clamp(22px, 3vw, 32px);}
+    .title h1{margin:0; font-size:clamp(22px, 3vw, 32px);}    
     .title .badge{background:var(--accent); color:white; padding:6px 10px; border-radius:999px; font-weight:700; font-size:14px;}
     .panel{display:grid; gap:12px; grid-template-columns: 1fr;}
     @media(min-width:900px){
       .panel{grid-template-columns: 340px 1fr;}
     }
-    .card{background:var(--card); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,.06);}
+    .card{background:var(--card); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,.06);}    
     .section-title{font-weight:800; margin:4px 0 10px; font-size:18px;}
     .row{display:flex; flex-wrap:wrap; gap:8px;}
     .select, select{width:100%; padding:12px 14px; border-radius:12px; border:2px solid #eee; font-size:16px;}
@@ -67,9 +67,13 @@
     <div class="header">
       <div class="title">
          <h1>Klasa 2B  Trener słówek</h1>
-      
       </div>
-  
+      <div style="display:flex; gap:8px; align-items:center;">
+        <label class="pill">Język:</label>
+        <select id="langSelect" class="select" style="width:180px;">
+          <option value="en">English (EN)</option>
+          <option value="de">Deutsch (DE)</option>
+        </select>
       </div>
     </div>
 
@@ -87,15 +91,15 @@
 
         <div class="section-title">3) Tryb nauki</div>
         <div class="mode" id="modeRow">
-          <label class="chip"><input type="radio" name="mode" value="en2pl"/> EN → PL</label>
-          <label class="chip"><input type="radio" name="mode" value="pl2en"/> PL → EN</label>
-          <label class="chip"><input type="radio" name="mode" value="spelling"/> Pisownia (EN ✍️)</label>
+          <label class="chip"><input type="radio" name="mode" value="en2pl"/> L1 → PL</label>
+          <label class="chip"><input type="radio" name="mode" value="pl2en"/> PL → L1</label>
+          <label class="chip"><input type="radio" name="mode" value="spelling"/> Pisownia (L1 ✍️)</label>
           <label class="chip active"><input type="radio" name="mode" value="mix" checked/> MIX (domyślnie)</label>
         </div>
 
         <div class="section-title">4) Dodatkowe opcje</div>
         <div class="row">
-          <button class="btn btn-ghost" id="btnTTSen" title="Odsłuchaj po angielsku">🔊 EN</button>
+          <button class="btn btn-ghost" id="btnTTSl1" title="Odsłuchaj w języku L1">🔊 L1</button>
           <button class="btn btn-ghost" id="btnTTSpl" title="Odsłuchaj po polsku">🔊 PL</button>
           <button class="btn btn-secondary" id="btnFlash">🃏 Tryb fiszek</button>
         </div>
@@ -109,13 +113,13 @@
       <main class="card">
         <div id="quizView" class="quiz">
           <div class="progress"><div class="bar"><i id="barFill"></i></div><span id="counter">0/0</span></div>
-          <div class="prompt" id="prompt">Wybierz rozdział i kliknij Start testu.</div>
+          <div class="prompt" id="prompt">Wybierz język i rozdział, potem kliknij Start testu.</div>
           <div class="row">
             <span class="sound-btn" id="speakPrompt">🔊 Przeczytaj</span>
           </div>
           <div id="choices" class="choices"></div>
           <div id="spellingBox" style="display:none" class="row">
-            <input id="spellingInput" class="select" placeholder="Wpisz po angielsku…"/>
+            <input id="spellingInput" class="select" placeholder="Wpisz…"/>
             <button class="btn btn-primary" id="checkSpell">Sprawdź</button>
           </div>
           <div class="row">
@@ -146,8 +150,7 @@
   </div>
 
 <script>
-// === Dane słownictwa — ROZDZIAŁY ===
-// Każdy wpis: { en:"…", pl:"…" }
+// === Dane słownictwa — ROZDZIAŁY (EN) ===
 const DATA = {
   "Wstępny": {
     basic: [
@@ -160,89 +163,57 @@ const DATA = {
       {en:"My favourite day is…", pl:"Mój ulubiony dzień to…"}
     ]
   },
-  "1. School": {
+  "1. School": { basic:[{en:"classroom",pl:"klasa"},{en:"computer room",pl:"pracownia komputerowa"},{en:"corridor",pl:"korytarz"},{en:"dining room",pl:"stołówka"},{en:"gym",pl:"sala gimnastyczna"},{en:"library",pl:"biblioteka"},{en:"playground",pl:"plac zabaw"},{en:"toilet",pl:"toaleta"},{en:"behind",pl:"za"},{en:"between",pl:"między"},{en:"in front of",pl:"przed"},{en:"next to",pl:"obok"}], extended: [] },
+  "2. House": { basic:[{en:"attic",pl:"strych"},{en:"bathroom",pl:"łazienka"},{en:"bedroom",pl:"sypialnia"},{en:"garage",pl:"garaż"},{en:"garden",pl:"ogród"},{en:"hall",pl:"hol/przedpokój"},{en:"kitchen",pl:"kuchnia"},{en:"living room",pl:"salon"}], extended: [] },
+  "3. Clothes": { basic:[{en:"dress",pl:"sukienka"},{en:"jacket",pl:"kurtka"},{en:"jeans",pl:"dżinsy"},{en:"skirt",pl:"spódnica"},{en:"sweater",pl:"sweter"},{en:"trainers",pl:"trampki"},{en:"trousers",pl:"spodnie"},{en:"T-shirt",pl:"koszulka"}], extended: [] },
+  "4. Appearance": { basic:[{en:"beard",pl:"broda"},{en:"curly hair",pl:"kręcone włosy"},{en:"dark hair",pl:"ciemne włosy"},{en:"fair hair",pl:"jasne włosy"}], extended: [] },
+  "5. Camp & Free time": { basic:[{en:"climb a tree",pl:"wspinać się na drzewo"},{en:"do yoga",pl:"ćwiczyć jogę"}], extended: [] },
+  "6. Summer & City": { basic:[{en:"aquarium",pl:"akwarium"},{en:"beach",pl:"plaża"}], extended: [] }
+};
+
+// === Dane słownictwa — ROZDZIAŁY (DE) ===
+// Dodany rozdział na podstawie Twoich danych: "Das trinke ich gern (Str. 29)"
+const DATA_DE = {
+  "Das trinke ich gern (Str. 29)": {
     basic: [
-      {en:"classroom", pl:"klasa"}, {en:"computer room", pl:"pracownia komputerowa"}, {en:"corridor", pl:"korytarz"}, {en:"dining room", pl:"stołówka"}, {en:"gym", pl:"sala gimnastyczna"}, {en:"library", pl:"biblioteka"}, {en:"playground", pl:"plac zabaw"}, {en:"toilet", pl:"toaleta"},
-      {en:"behind", pl:"za"}, {en:"between", pl:"między"}, {en:"in front of", pl:"przed"}, {en:"next to", pl:"obok"}
+      // pełne zdania (zwroty)
+      {l1:"Ich trinke gern Milch.", pl:"Chętnie piję mleko.", word:"Milch"},
+      {l1:"Ich trinke gern Apfelsaft.", pl:"Chętnie piję sok jabłkowy.", word:"Apfelsaft"},
+      {l1:"Ich trinke gern Limo.", pl:"Chętnie piję lemoniadę.", word:"Limo"},
+      {l1:"Ich trinke gern Cola.", pl:"Chętnie piję colę.", word:"Cola"},
+      {l1:"Ich trinke gern Tee.", pl:"Chętnie piję herbatę.", word:"Tee"},
+      {l1:"Ich trinke gern Kakao.", pl:"Chętnie piję kakao.", word:"Kakao"},
+      {l1:"Ich trinke gern Mineralwasser.", pl:"Chętnie piję wodę mineralną.", word:"Mineralwasser"},
+      // pojedyncze słówka
+      {l1:"Milch", pl:"mleko"}, {l1:"Apfelsaft", pl:"sok jabłkowy"}, {l1:"Limo", pl:"lemoniada"}, {l1:"Cola", pl:"cola"}, {l1:"Tee", pl:"herbata"}, {l1:"Kakao", pl:"kakao"}, {l1:"Mineralwasser", pl:"woda mineralna"}
     ],
-    extended: [
-      {en:"line up", pl:"ustaw się w kolejce"}, {en:"listen to others", pl:"słuchaj innych"}, {en:"play nicely", pl:"baw się ładnie"}, {en:"put your hand up", pl:"podnieś rękę"}, {en:"wash your hands", pl:"umyj ręce"},
-      {en:"catch", pl:"łapać / berek"}, {en:"hide-and-seek", pl:"chowanego"}, {en:"hopscotch", pl:"klasy"}, {en:"monster tag", pl:"potworny berek"},
-      {en:"glue", pl:"klej"}, {en:"markers", pl:"pisaki"}, {en:"paints", pl:"farby"}, {en:"plasticine", pl:"plastelina"}, {en:"scissors", pl:"nożyczki"}, {en:"sticky tape", pl:"taśma klejąca"}
-    ]
-  },
-  "2. House": {
-    basic: [
-      {en:"attic", pl:"strych"}, {en:"bathroom", pl:"łazienka"}, {en:"bedroom", pl:"sypialnia"}, {en:"garage", pl:"garaż"}, {en:"garden", pl:"ogród"}, {en:"hall", pl:"hol/przedpokój"}, {en:"kitchen", pl:"kuchnia"}, {en:"living room", pl:"salon"},
-      {en:"flat", pl:"mieszkanie"}, {en:"house", pl:"dom"},
-      {en:"bed", pl:"łóżko"}, {en:"cooker", pl:"kuchenka"}, {en:"fridge", pl:"lodówka"}, {en:"shower", pl:"prysznic"}, {en:"sofa", pl:"sofa"}
-    ],
-    extended: [
-      {en:"fabric", pl:"tkanina"}, {en:"metal", pl:"metal"}, {en:"stone", pl:"kamień"}, {en:"straw", pl:"słoma"}, {en:"wood", pl:"drewno"},
-      {en:"caravan", pl:"przyczepa kempingowa"}, {en:"castle", pl:"zamek"}, {en:"cottage", pl:"chatka"}, {en:"houseboat", pl:"barka mieszkalna"},
-      {en:"armchair", pl:"fotel"}, {en:"bath", pl:"wanna"}, {en:"bookshelf", pl:"regał na książki"}, {en:"carpet", pl:"dywan"}, {en:"drawer", pl:"szuflada"}, {en:"table", pl:"stół"}
-    ]
-  },
-  "3. Clothes": {
-    basic: [
-      {en:"dress", pl:"sukienka"}, {en:"jacket", pl:"kurtka"}, {en:"jeans", pl:"dżinsy"}, {en:"skirt", pl:"spódnica"}, {en:"sweater", pl:"sweter"}, {en:"trainers", pl:"trampki"}, {en:"trousers", pl:"spodnie"}, {en:"T-shirt", pl:"koszulka"},
-      {en:"clean", pl:"czysty"}, {en:"dirty", pl:"brudny"}, {en:"new", pl:"nowy"}, {en:"old", pl:"stary"}
-    ],
-    extended: [
-      {en:"sunhat", pl:"kapelusz przeciwsłoneczny"}, {en:"apron", pl:"fartuch"}, {en:"P.E. kit", pl:"strój na WF"}, {en:"sweatshirt", pl:"bluza"}, {en:"school uniform", pl:"mundurek"},
-      {en:"hoodie", pl:"bluza z kapturem"}, {en:"shorts", pl:"krótkie spodenki"}, {en:"socks", pl:"skarpetki"}, {en:"swimsuit", pl:"strój kąpielowy"}, {en:"vest", pl:"podkoszulek"}, {en:"wellies", pl:"kalosze"}
-    ]
-  },
-  "4. Appearance": {
-    basic: [
-      {en:"beard", pl:"broda"}, {en:"curly hair", pl:"kręcone włosy"}, {en:"dark hair", pl:"ciemne włosy"}, {en:"fair hair", pl:"jasne włosy"}, {en:"long hair", pl:"długie włosy"}, {en:"moustache", pl:"wąsy"}, {en:"short hair", pl:"krótkie włosy"}, {en:"straight hair", pl:"proste włosy"},
-      {en:"crown", pl:"korona"}, {en:"earrings", pl:"kolczyki"}, {en:"glasses", pl:"okulary"}, {en:"necklace", pl:"naszyjnik"}, {en:"wig", pl:"peruka"},
-      {en:"circle", pl:"koło"}, {en:"line", pl:"linia"}, {en:"oval", pl:"owal"}
-    ],
-    extended: [
-      {en:"birthday party", pl:"urodziny"}, {en:"carnival", pl:"karnawał"}, {en:"Halloween", pl:"Halloween"}, {en:"school play", pl:"przedstawienie szkolne"},
-      {en:"cook", pl:"kucharz"}, {en:"dancer", pl:"tancerz"}, {en:"driver", pl:"kierowca"}, {en:"painter", pl:"malarz"}, {en:"police officer", pl:"policjant"}, {en:"vet", pl:"weterynarz"}
-    ]
-  },
-  "5. Camp & Free time": {
-    basic: [
-      {en:"climb a tree", pl:"wspinać się na drzewo"}, {en:"do yoga", pl:"ćwiczyć jogę"}, {en:"go for a walk", pl:"iść na spacer"}, {en:"play basketball", pl:"grać w koszykówkę"}, {en:"play table tennis", pl:"grać w tenisa stołowego"}, {en:"play volleyball", pl:"grać w siatkówkę"}, {en:"sail a boat", pl:"płynąć łódką/żeglować"}, {en:"swim in the lake", pl:"pływać w jeziorze"},
-      {en:"make a model", pl:"składać model"}, {en:"play a board game", pl:"grać w grę planszową"}, {en:"play the guitar", pl:"grać na gitarze"}, {en:"read a comic", pl:"czytać komiks"}
-    ],
-    extended: [
-      {en:"bones", pl:"kości"}, {en:"joints", pl:"stawy"}, {en:"muscles", pl:"mięśnie"}, {en:"skeleton", pl:"szkielet"},
-      {en:"cook on a campfire", pl:"gotować na ognisku"}, {en:"make a den", pl:"zbudować bazę/szałas"}, {en:"sing songs", pl:"śpiewać piosenki"}, {en:"tell scary stories", pl:"opowiadać straszne historie"},
-      {en:"have a picnic", pl:"mieć piknik"}, {en:"go kayaking", pl:"pływać kajakiem"}, {en:"listen to music", pl:"słuchać muzyki"}, {en:"play cards", pl:"grać w karty"}, {en:"sleep in a tent", pl:"spać w namiocie"}, {en:"take photos", pl:"robić zdjęcia"}
-    ]
-  },
-  "6. Summer & City": {
-    basic: [
-      {en:"aquarium", pl:"akwarium"}, {en:"beach", pl:"plaża"}, {en:"funfair", pl:"wesołe miasteczko"}, {en:"mountains", pl:"góry"}, {en:"safari park", pl:"park safari"}, {en:"skate park", pl:"skatepark"}, {en:"village", pl:"wieś"}, {en:"water park", pl:"aquapark"},
-      {en:"by boat", pl:"łodzią"}, {en:"by bus", pl:"autobusem"}, {en:"by car", pl:"samochodem"}, {en:"by train", pl:"pociągiem"}, {en:"on foot", pl:"pieszo"}
-    ],
-    extended: [
-      {en:"by bike", pl:"rowerem"}, {en:"by ferry", pl:"promem"}, {en:"by underground train", pl:"metrem"},
-      {en:"do crafts", pl:"robić prace plastyczne"}, {en:"dress up", pl:"przebierać się"}, {en:"play in the playground", pl:"bawić się na placu zabaw"}, {en:"visit a castle", pl:"zwiedzać zamek"},
-      {en:"bakery", pl:"piekarnia"}, {en:"bookshop", pl:"księgarnia"}, {en:"clothes shop", pl:"sklep z ubraniami"}, {en:"greengrocer's", pl:"warzywniak"}, {en:"pet shop", pl:"sklep zoologiczny"}, {en:"toy shop", pl:"sklep z zabawkami"}
-    ]
+    extended: []
   }
 };
 
 // === Stan aplikacji ===
 let queue = []; // kolejka pytań
-let current = null; // bieżące pytanie {q, a, item}
+let current = null; // bieżące pytanie {q, a,choices, qLang:'l1'|'pl', type:'choice'|'spelling', item}
 let answered = 0, correct = 0;
 let wrongStack = []; // błędne odpowiedzi do powtórki
 let mode = 'mix';
-let ttsEN = null, ttsPL = null;
+let voiceEN = null, voiceDE = null, voicePL = null;
+let currentLang = 'en'; // 'en' or 'de'
 let flashIndex = 0; let flashItems = [];
 
-// === Inicjalizacja ===
+// === Inicjalizacja DOM ===
+const langSelect = document.getElementById('langSelect');
 const chapterSelect = document.getElementById('chapterSelect');
-Object.keys(DATA).forEach((name, idx)=>{
-  const opt = document.createElement('option');
-  opt.value = name; opt.textContent = name; if(idx===0) opt.selected=true; chapterSelect.appendChild(opt);
-});
+
+function populateChapters(){
+  chapterSelect.innerHTML = '';
+  const src = currentLang === 'en' ? DATA : DATA_DE;
+  Object.keys(src).forEach((name, idx)=>{
+    const opt = document.createElement('option'); opt.value = name; opt.textContent = name; if(idx===0) opt.selected=true; chapterSelect.appendChild(opt);
+  });
+}
+
+populateChapters();
 
 // radio chips UI
 function syncChips(containerId){
@@ -261,23 +232,11 @@ syncChips('scopeRow');
 syncChips('modeRow');
 
 // === TTS ===
-// oddzielny angielski i polski lektor
-let voiceEN = null;
-let voicePL = null;
-
 function initVoices() {
   const voices = window.speechSynthesis.getVoices();
-  // wybierz angielski (preferuj naturalne głosy)
-  voiceEN =
-    voices.find(v => v.lang.startsWith('en-GB')) ||
-    voices.find(v => v.lang.startsWith('en-US')) ||
-    voices.find(v => v.lang.toLowerCase().includes('en')) ||
-    voices[0];
-  // wybierz polski
-  voicePL =
-    voices.find(v => v.lang.startsWith('pl-')) ||
-    voices.find(v => v.lang.toLowerCase().includes('pol')) ||
-    voices[0];
+  voiceEN = voices.find(v => v.lang && v.lang.startsWith('en-')) || voices.find(v => v.lang && v.lang.toLowerCase().includes('en')) || voices[0];
+  voiceDE = voices.find(v => v.lang && v.lang.startsWith('de-')) || voices.find(v => v.lang && v.lang.toLowerCase().includes('de')) || voices[0];
+  voicePL = voices.find(v => v.lang && v.lang.startsWith('pl-')) || voices.find(v => v.lang && v.lang.toLowerCase().includes('pol')) || voices[0];
 }
 
 if ('speechSynthesis' in window) {
@@ -285,34 +244,26 @@ if ('speechSynthesis' in window) {
   initVoices();
 }
 
-function speakEN(text) {
-  if (!voiceEN) initVoices();
+function speakText(text, lang){
+  if(!text) return;
   const u = new SpeechSynthesisUtterance(text);
-  u.voice = voiceEN;
-  u.rate = 0.95;
-  u.pitch = 1.0;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
-}
-
-function speakPL(text) {
-  if (!voicePL) initVoices();
-  const u = new SpeechSynthesisUtterance(text);
-  u.voice = voicePL;
-  u.rate = 0.95;
-  u.pitch = 1.0;
+  if(lang==='en') u.voice = voiceEN;
+  else if(lang==='de') u.voice = voiceDE;
+  else if(lang==='pl') u.voice = voicePL;
+  u.rate = 0.95; u.pitch = 1.0;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
 }
 
 // przyciski odsłuchu
-document.getElementById('btnTTSen').onclick = () =>
-  current ? speakEN(current.qLang === 'en' ? current.q : current.a) : null;
-document.getElementById('btnTTSpl').onclick = () =>
-  current ? speakPL(current.qLang === 'en' ? current.a : current.q) : null;
-document.getElementById('speakPrompt').onclick = () =>
-  current ? (current.qLang === 'en' ? speakEN(current.q) : speakPL(current.q)) : null;
+document.getElementById('btnTTSl1').onclick = () =>
+  current ? speakText(current.qLang === 'l1' ? current.q : current.a, currentLang) : null;
 
+document.getElementById('btnTTSpl').onclick = () =>
+  current ? speakText(current.qLang === 'l1' ? current.a : current.q, 'pl') : null;
+
+document.getElementById('speakPrompt').onclick = () =>
+  current ? (current.qLang === 'l1' ? speakText(current.q, currentLang) : speakText(current.q, 'pl')) : null;
 
 // === Losowanie pytań ===
 function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
@@ -321,7 +272,7 @@ function buildPool(){
   const chapter = chapterSelect.value;
   const scope = document.querySelector('input[name="scope"]:checked').value; // basic|extended|both
   let pool = [];
-  const src = DATA[chapter];
+  const src = currentLang === 'en' ? DATA[chapter] : DATA_DE[chapter];
   if(!src) return [];
   if(scope==='basic' || scope==='both') pool = pool.concat(src.basic);
   if(scope==='extended' || scope==='both') pool = pool.concat(src.extended);
@@ -329,18 +280,47 @@ function buildPool(){
 }
 
 function makeQuestion(item){
-  // Based on mode, generate: {q,a,choices[], qLang:'en'|'pl'}
-  const m = mode==='mix' ? ['en2pl','pl2en','spelling'][Math.floor(Math.random()*3)] : mode;
-  const pool = buildPool();
-  if(m==='spelling'){
-    return {q:item.en, a:item.en, qLang:'en', type:'spelling', item};
-  }
-  if(m==='en2pl'){
-    const distractors = shuffle(pool.filter(x=>x!==item)).slice(0,3).map(x=>x.pl);
-    return {q:item.en, a:item.pl, qLang:'en', type:'choice', choices:shuffle([item.pl, ...distractors]), item};
+  // Based on mode & language, generate question object
+  const rawMode = mode==='mix' ? ['en2pl','pl2en','spelling'][Math.floor(Math.random()*3)] : mode;
+  // Map to actual directional mode depending on language
+  let m = rawMode;
+  if(currentLang==='de'){
+    if(rawMode==='en2pl') m = 'l1toPl';
+    if(rawMode==='pl2en') m = 'plToL1';
   } else {
-    const distractors = shuffle(pool.filter(x=>x!==item)).slice(0,3).map(x=>x.en);
-    return {q:item.pl, a:item.en, qLang:'pl', type:'choice', choices:shuffle([item.en, ...distractors]), item};
+    if(rawMode==='en2pl') m = 'l1toPl';
+    if(rawMode==='pl2en') m = 'plToL1';
+  }
+  if(m==='spelling'){
+    // spelling in L1 (en/de) — show prompt in Polish, expect L1
+    if(currentLang==='en') return {q:item.en, a:item.en, qLang:'l1', type:'spelling', item};
+    else return {q:item.l1 || item.en, a:item.l1 || item.en, qLang:'l1', type:'spelling', item};
+  }
+
+  // choice question
+  const pool = buildPool();
+  if(currentLang==='en'){
+    if(m==='l1toPl'){
+      const distractors = shuffle(pool.filter(x=>x!==item)).slice(0,3).map(x=>x.pl);
+      return {q:item.en, a:item.pl, qLang:'l1', type:'choice', choices:shuffle([item.pl, ...distractors]), item};
+    } else {
+      const distractors = shuffle(pool.filter(x=>x!==item)).slice(0,3).map(x=>x.en);
+      return {q:item.pl, a:item.en, qLang:'pl', type:'choice', choices:shuffle([item.en, ...distractors]), item};
+    }
+  } else { // german
+    if(m==='l1toPl'){
+      // present German (l1) -> Polish
+      const distractors = shuffle(pool.filter(x=>x!==item)).slice(0,3).map(x=>x.pl);
+      const qText = item.l1 || item.en || '';
+      const aText = item.pl || '';
+      return {q:qText, a:aText, qLang:'l1', type:'choice', choices:shuffle([aText, ...distractors]), item};
+    } else {
+      // Polish -> German (l1)
+      const distractors = shuffle(pool.filter(x=>x!==item)).slice(0,3).map(x=>x.l1 || x.en);
+      const qText = item.pl || '';
+      const aText = item.l1 || item.en || '';
+      return {q:qText, a:aText, qLang:'pl', type:'choice', choices:shuffle([aText, ...distractors]), item};
+    }
   }
 }
 
@@ -356,6 +336,7 @@ function nextQuestion(){
   document.getElementById('spellingInput').value='';
   const progressBar = document.getElementById('barFill');
   const counter = document.getElementById('counter');
+  const totalPool = answered + queue.length + wrongStack.length;
   if(queue.length===0){
     if(wrongStack.length){ // powtórka
       queue = shuffle(wrongStack.slice()); wrongStack = [];
@@ -371,8 +352,9 @@ function nextQuestion(){
   const item = queue.shift();
   current = makeQuestion(item);
   renderQuestion(current);
-  progressBar.style.width = `${(answered/(answered+queue.length+wrongStack.length))*100}%`;
-  counter.textContent = `${answered}/${answered+queue.length+wrongStack.length}`;
+  const denom = Math.max(1, totalPool);
+  progressBar.style.width = `${(answered/denom)*100}%`;
+  counter.textContent = `${answered}/${denom}`;
 }
 
 function renderQuestion(q){
@@ -381,6 +363,8 @@ function renderQuestion(q){
   const sb = document.getElementById('spellingBox');
   const feedback = document.getElementById('feedback');
   feedback.textContent = '';
+
+  if(!q) return;
 
   if(q.type==='choice'){
     sb.style.display = 'none';
@@ -395,7 +379,9 @@ function renderQuestion(q){
   } else { // spelling
     choices.innerHTML = '';
     sb.style.display = 'grid';
-    prompt.textContent = `Napisz po angielsku: ${q.item.pl}`;
+    // show Polish prompt asking to write L1
+    if(currentLang==='en') prompt.textContent = `Napisz po angielsku: ${q.item.pl}`;
+    else prompt.textContent = `Napisz po niemiecku: ${q.item.pl}`;
   }
 }
 
@@ -407,10 +393,9 @@ function selectChoice(el, ok){
     // zaznacz poprawną
     const correctBtn = all.find(b=>b.textContent===current.a);
     if(correctBtn) correctBtn.classList.add('correct');
+    // push underlying item for repeat
     wrongStack.push(current.item);
-  } else {
-    correct++;
-  }
+  } else { correct++; }
   answered++;
   document.getElementById('btnNext').disabled = false;
 }
@@ -431,7 +416,7 @@ document.getElementById('spellingInput').addEventListener('keydown', e=>{ if(e.k
 
 document.getElementById('btnNext').onclick = nextQuestion;
 document.getElementById('btnStart').onclick = startQuiz;
-document.getElementById('btnReset').onclick = ()=>{ queue=[]; wrongStack=[]; answered=0; correct=0; current=null; document.getElementById('prompt').textContent='Wybierz rozdział i kliknij Start testu.'; document.getElementById('choices').innerHTML=''; document.getElementById('counter').textContent='0/0'; document.getElementById('barFill').style.width='0%'; };
+document.getElementById('btnReset').onclick = ()=>{ queue=[]; wrongStack=[]; answered=0; correct=0; current=null; document.getElementById('prompt').textContent='Wybierz język i rozdział, potem kliknij Start testu.'; document.getElementById('choices').innerHTML=''; document.getElementById('counter').textContent='0/0'; document.getElementById('barFill').style.width='0%'; };
 
 // === Tryb fiszek ===
 const flashView = document.getElementById('flashView');
@@ -450,36 +435,52 @@ function exitFlash(){ quizView.style.display='grid'; flashView.style.display='no
 
 function renderFlash(){
   const total = flashItems.length; const cur = flashItems[flashIndex] || {en:'—', pl:'—'};
-  document.getElementById('flashFront').textContent = cur.en;
-  document.getElementById('flashBack').textContent = cur.pl;
+  if(currentLang==='en'){
+    document.getElementById('flashFront').textContent = cur.en;
+    document.getElementById('flashBack').textContent = cur.pl;
+  } else {
+    document.getElementById('flashFront').textContent = cur.l1 || cur.en || '—';
+    document.getElementById('flashBack').textContent = cur.pl || '—';
+  }
   document.getElementById('barFillFlash').style.width = `${(flashIndex/Math.max(1,total))*100}%`;
   document.getElementById('counterFlash').textContent = `${flashIndex+1}/${total}`;
   document.getElementById('flashInner').classList.remove('flipped');
 }
 
-document.getElementById('flashcard').onclick = ()=>{
-  document.getElementById('flashInner').classList.toggle('flipped');
-};
+document.getElementById('flashcard').onclick = ()=>{ document.getElementById('flashInner').classList.toggle('flipped'); };
 
 document.getElementById('markEasy').onclick = ()=>{ if(flashIndex < flashItems.length-1){ flashIndex++; renderFlash(); } };
 
 document.getElementById('markHard').onclick = ()=>{
-  // Dołóż bieżącą fiszkę na koniec talijki, żeby wróciła
   const it = flashItems[flashIndex]; flashItems.push(it);
   flashIndex++; renderFlash();
 };
 
-document.getElementById('speakFront').onclick = ()=>{ const it=flashItems[flashIndex]; speak(it.en,'en'); };
+document.getElementById('speakFront').onclick = ()=>{ const it=flashItems[flashIndex]; if(currentLang==='en') speakText(it.en,'en'); else speakText(it.l1 || it.en,'de'); };
 
-document.getElementById('speakBack').onclick = ()=>{ const it=flashItems[flashIndex]; speak(it.pl,'pl'); };
+document.getElementById('speakBack').onclick = ()=>{ const it=flashItems[flashIndex]; speakText(it.pl,'pl'); };
 
-// Prefetch voices — inicjalizacja oddzielnych lektorów EN/PL
+// Language change handler
+langSelect.addEventListener('change', ()=>{
+  currentLang = langSelect.value;
+  populateChapters();
+  // reset state
+  queue=[]; wrongStack=[]; answered=0; correct=0; current=null;
+  document.getElementById('prompt').textContent='Wybierz rozdział i kliknij Start testu.';
+  document.getElementById('choices').innerHTML='';
+  document.getElementById('barFill').style.width='0%';
+});
+
+// When chapter changes while in flash mode, re-render
+chapterSelect.addEventListener('change', ()=>{ if(flashView.style.display!=='none') renderFlash(); });
+
+// Prefetch voices — inicjalizacja
 if(window.speechSynthesis){
   window.speechSynthesis.onvoiceschanged = initVoices;
-  // Kickstart pobierania listy głosów (często potrzebne w Chrome/Safari)
   window.speechSynthesis.getVoices();
   setTimeout(initVoices, 0);
 }
+
 </script>
 </body>
 </html>
