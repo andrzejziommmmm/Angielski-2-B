@@ -470,6 +470,45 @@
       0%, 100% { box-shadow: 0 0 5px #FF6584; }
       50% { box-shadow: 0 0 20px #FF6584; }
     }
+    
+    /* NOWY STYL - MISJA NA GÓRZE */
+    .math-mission-header {
+      background: rgba(42, 45, 67, 0.9);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(108, 99, 255, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    
+    .math-mission-title {
+      font-size: 1.8rem;
+      color: #36D1DC;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .math-mission-description {
+      color: #A0A3BD;
+      font-size: 1.1rem;
+    }
+    
+    .math-content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    @media (min-width: 900px) {
+      .math-content-wrapper {
+        grid-template-columns: 340px 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -561,60 +600,73 @@
 
     <!-- Widok Matematyka - ZACHOWANE WSZYSTKIE EFEKTY WIZUALNE -->
     <div id="mathView" class="panel" style="display:none">
-      <aside class="mission-selector">
-        <h2 class="mission-title">Wybierz Misję</h2>
-        <div class="planet-grid" id="planet-grid"></div>
-        
-        <div class="math-progress-container">
-          <div class="math-progress-bar">
-            <div class="math-progress" id="math-progress-bar"></div>
-          </div>
-          <div class="math-stats">
-            <span>Poziom: <span id="math-level">1</span></span>
-            <span>Punkty: <span id="math-points">0</span></span>
-            <span>Energia: <span id="math-energy">100</span>%</span>
-          </div>
+      <!-- MISJA NA GÓRZE -->
+      <div class="math-mission-header hidden" id="mathMissionHeader">
+        <div class="math-mission-title">
+          <span id="mathMissionIcon">🚀</span>
+          <span id="mathMissionName">Wybór Misji</span>
         </div>
-        
-        <div class="math-achievements" id="math-achievements"></div>
-      </aside>
+        <div class="math-mission-description" id="mathMissionDescription">
+          Wybierz misję z panelu po lewej, aby rozpocząć kosmiczną przygodę z mnożeniem!
+        </div>
+      </div>
       
-      <main class="math-game-area">
-        <div class="math-game-screen" id="math-game-screen">
-          <div class="math-question-section">
-            <h2 id="math-game-title">Wybór Trybu Misji</h2>
-            <p id="math-game-description">Wybierz misję z panelu po lewej, aby rozpocząć kosmiczną przygodę z mnożeniem!</p>
-            
-            <div class="math-visualization" id="math-visualization"></div>
-            
-            <div class="result-display" id="math-result-display"></div>
-            
-            <div class="story-text hidden" id="math-story-text"></div>
-            
-            <div class="math-answer-options" id="math-answer-options"></div>
-            
-            <div class="math-controls">
-              <button class="btn" id="math-hint-btn">Podpowiedź</button>
-              <button class="btn btn-secondary" id="math-next-btn">Dalej</button>
-              <button class="btn" id="math-reset-btn">Reset</button>
+      <div class="math-content-wrapper">
+        <aside class="mission-selector">
+          <h2 class="mission-title">Wybierz Misję</h2>
+          <div class="planet-grid" id="planet-grid"></div>
+          
+          <div class="math-progress-container">
+            <div class="math-progress-bar">
+              <div class="math-progress" id="math-progress-bar"></div>
+            </div>
+            <div class="math-stats">
+              <span>Poziom: <span id="math-level">1</span></span>
+              <span>Punkty: <span id="math-points">0</span></span>
+              <span>Energia: <span id="math-energy">100</span>%</span>
             </div>
           </div>
           
-          <div class="math-stats-section">
-            <div class="math-progress-container">
-              <div class="math-progress-bar">
-                <div class="math-progress" id="math-game-progress-bar"></div>
+          <div class="math-achievements" id="math-achievements"></div>
+        </aside>
+        
+        <main class="math-game-area">
+          <div class="math-game-screen" id="math-game-screen">
+            <div class="math-question-section">
+              <h2 id="math-game-title">Wybór Trybu Misji</h2>
+              <p id="math-game-description">Wybierz misję z panelu po lewej, aby rozpocząć kosmiczną przygodę z mnożeniem!</p>
+              
+              <div class="math-visualization" id="math-visualization"></div>
+              
+              <div class="result-display" id="math-result-display"></div>
+              
+              <div class="story-text hidden" id="math-story-text"></div>
+              
+              <div class="math-answer-options" id="math-answer-options"></div>
+              
+              <div class="math-controls">
+                <button class="btn" id="math-hint-btn">Podpowiedź</button>
+                <button class="btn btn-secondary" id="math-next-btn">Dalej</button>
+                <button class="btn" id="math-reset-btn">Reset</button>
               </div>
-              <div class="math-stats">
-                <span>Poprawne: <span id="math-correct">0</span>/<span id="math-total">0</span></span>
-                <span>Serii: <span id="math-streak">0</span></span>
+            </div>
+            
+            <div class="math-stats-section">
+              <div class="math-progress-container">
+                <div class="math-progress-bar">
+                  <div class="math-progress" id="math-game-progress-bar"></div>
+                </div>
+                <div class="math-stats">
+                  <span>Poprawne: <span id="math-correct">0</span>/<span id="math-total">0</span></span>
+                  <span>Serii: <span id="math-streak">0</span></span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div class="multiply-table hidden" id="math-multiply-table"></div>
-      </main>
+          
+          <div class="multiply-table hidden" id="math-multiply-table"></div>
+        </main>
+      </div>
     </div>
 
     <div class="footer">Andrzej & Marcin Dane słownictwa na podstawie planu „Kids Can! 2” (rozdziały i zakres podstawowy/rozszerzony). Projekt edukacyjny — użytek własny w klasie/szkole.</div>
@@ -1170,6 +1222,12 @@ function selectMathPlanet(planet) {
   event.target.classList.add('active');
   
   mathState.currentPlanet = planet.id;
+  
+  // Pokaż nagłówek misji na górze
+  document.getElementById('mathMissionHeader').classList.remove('hidden');
+  document.getElementById('mathMissionIcon').textContent = planet.icon;
+  document.getElementById('mathMissionName').textContent = planet.name;
+  document.getElementById('mathMissionDescription').textContent = planet.description;
   
   // Ukrycie tabliczki mnożenia jeśli była widoczna
   document.getElementById('math-multiply-table').classList.add('hidden');
