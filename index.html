@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KidsCan! 2 — Trener słówek KLASA 2B</title>
+  <title>KidsCan! 2 — Trener słówek i tabliczki mnożenia KLASA 2B</title>
   <style>
     :root{
       --bg:#fff8f0; --card:#ffffff; --ink:#1b1b1b; --muted:#666; --accent:#6c5ce7; --accent2:#00b894; --wrong:#ff7675; --right:#55efc4;
+      --math-color: #6C63FF; --english-color: #FF6584;
     }
     html,body{height:100%;}
     body{margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", sans-serif; background:var(--bg); color:var(--ink);}
@@ -15,6 +16,13 @@
     .title{display:flex; align-items:center; gap:10px;}
     .title h1{margin:0; font-size:clamp(22px, 3vw, 32px);}
     .title .badge{background:var(--accent); color:white; padding:6px 10px; border-radius:999px; font-weight:700; font-size:14px;}
+    
+    .subject-selector{display:flex; gap:10px; margin:20px 0; justify-content:center;}
+    .subject-btn{flex:1; max-width:200px; padding:14px; border-radius:16px; border:3px solid #eee; background:white; font-size:18px; font-weight:800; cursor:pointer; text-align:center; transition:all 0.3s;}
+    .subject-btn.active{transform:translateY(-3px); box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+    .subject-btn.english.active{border-color:var(--english-color); background:#ffeef2;}
+    .subject-btn.math.active{border-color:var(--math-color); background:#f0f0ff;}
+    
     .panel{display:grid; gap:12px; grid-template-columns: 1fr;}
     @media(min-width:900px){
       .panel{grid-template-columns: 340px 1fr;}
@@ -60,20 +68,405 @@
     .sound-btn{background:#e8f5ff; border-radius:999px; padding:10px 12px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-weight:800;}
 
     .footer{margin-top:14px; color:#666; font-size:12px;}
+    
+    /* Styl dla matematyki - ZACHOWANE WSZYSTKIE EFEKTY WIZUALNE */
+    .math-visualization {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+    
+    .multiply-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .group-container {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .math-element {
+      width: 35px;
+      height: 35px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      background: var(--math-color);
+      color: white;
+      animation: float 3s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .math-operator {
+      font-size: 2rem;
+      color: var(--math-color);
+    }
+    
+    .result-display {
+      font-size: 2.5rem;
+      margin: 1rem 0;
+      color: var(--math-color);
+      min-height: 60px;
+      text-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+    }
+    
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle 5s infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    
+    .cosmic-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+    
+    .rocket {
+      position: absolute;
+      font-size: 3rem;
+      animation: fly 15s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes fly {
+      0% { transform: translateX(-100px) translateY(100px) rotate(45deg); }
+      100% { transform: translateX(1200px) translateY(-800px) rotate(45deg); }
+    }
+    
+    .alien {
+      position: absolute;
+      font-size: 2rem;
+      animation: floatAlien 8s ease-in-out infinite;
+      z-index: 0;
+    }
+    
+    @keyframes floatAlien {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      25% { transform: translateY(-20px) rotate(5deg); }
+      50% { transform: translateY(0) rotate(0); }
+      75% { transform: translateY(20px) rotate(-5deg); }
+    }
+    
+    .ufo {
+      position: absolute;
+      font-size: 2.5rem;
+      animation: hoverUFO 10s ease-in-out infinite;
+      z-index: 0;
+    }
+    
+    @keyframes hoverUFO {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(50px) translateY(-30px); }
+      50% { transform: translateX(0) translateY(-50px); }
+      75% { transform: translateX(-50px) translateY(-30px); }
+    }
+    
+    .celebration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 20px;
+      background: var(--accent);
+      top: -20px;
+      animation: fall 5s linear forwards;
+    }
+    
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+    
+    .multiply-table {
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      gap: 5px;
+      margin-top: 1rem;
+    }
+    
+    .table-cell {
+      padding: 10px 5px;
+      text-align: center;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .table-cell.header {
+      background: rgba(108, 99, 255, 0.3);
+      font-weight: bold;
+    }
+    
+    .table-cell.highlight {
+      background: rgba(54, 209, 220, 0.3);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .hidden {
+      display: none;
+    }
+
+    /* Styl dla misji matematycznych - ZACHOWANE Z POPRZEDNIEJ APLIKACJI */
+    .mission-selector {
+      background: rgba(42, 45, 67, 0.7);
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(108, 99, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .mission-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: #36D1DC;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .mission-title::before {
+      content: "🚀";
+    }
+    
+    .planet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .planet {
+      aspect-ratio: 1;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .planet-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .planet-name {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    
+    .planet-desc {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    
+    .planet::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .planet:hover::before {
+      opacity: 1;
+    }
+    
+    .planet.active {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px currentColor;
+    }
+    
+    .math-game-area {
+      background: rgba(42, 45, 67, 0.7);
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(108, 99, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .math-game-screen {
+      width: 100%;
+      text-align: center;
+      z-index: 1;
+    }
+    
+    .story-text {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin: 1.5rem 0;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1.5rem;
+      border-radius: 15px;
+      border-left: 4px solid #36D1DC;
+    }
+    
+    .math-answer-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 2rem 0;
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .math-controls {
+      display: flex;
+      gap: 15px;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .math-progress-container {
+      margin-top: 2rem;
+      width: 100%;
+    }
+    
+    .math-progress-bar {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .math-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #6C63FF, #36D1DC);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    
+    .math-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #A0A3BD;
+    }
+    
+    .math-achievements {
+      display: flex;
+      gap: 15px;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .math-achievement {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 101, 132, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .math-achievement.unlocked {
+      border-color: #FF6584;
+      background: rgba(255, 101, 132, 0.4);
+      transform: scale(1.1);
+      animation: glow 2s infinite;
+    }
+    
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 5px #FF6584; }
+      50% { box-shadow: 0 0 20px #FF6584; }
+    }
   </style>
 </head>
 <body>
+  <div class="stars" id="stars"></div>
+  <div class="cosmic-bg" id="cosmic-bg"></div>
+  <div class="celebration" id="celebration"></div>
+  
   <div class="app">
     <div class="header">
       <div class="title">
-         <h1>Klasa 2B  Trener słówek</h1>
-      
-      </div>
-  
+         <h1>Klasa 2B  Trener słówek i tabliczki mnożenia</h1>
       </div>
     </div>
+    
+    <div class="subject-selector">
+      <button class="subject-btn english active" data-subject="english">🇬🇧 Angielski</button>
+      <button class="subject-btn math" data-subject="math">🔢 Matematyka</button>
+    </div>
 
-    <div class="panel">
+    <!-- Widok Angielski -->
+    <div id="englishView" class="panel">
       <aside class="card">
         <div class="section-title">1) Wybierz rozdział</div>
         <select id="chapterSelect" class="select"></select>
@@ -142,12 +535,123 @@
       </main>
     </div>
 
-    <div class="footer"> Andrzej & Marcin Dane słownictwa na podstawie planu „Kids Can! 2” (rozdziały i zakres podstawowy/rozszerzony). Projekt edukacyjny — użytek własny w klasie/szkole. </div>
+    <!-- Widok Matematyka - ZACHOWANE WSZYSTKIE EFEKTY WIZUALNE -->
+    <div id="mathView" class="panel" style="display:none">
+      <aside class="mission-selector">
+        <h2 class="mission-title">Wybierz Misję</h2>
+        <div class="planet-grid" id="planet-grid"></div>
+        
+        <div class="math-progress-container">
+          <div class="math-progress-bar">
+            <div class="math-progress" id="math-progress-bar"></div>
+          </div>
+          <div class="math-stats">
+            <span>Poziom: <span id="math-level">1</span></span>
+            <span>Punkty: <span id="math-points">0</span></span>
+            <span>Energia: <span id="math-energy">100</span>%</span>
+          </div>
+        </div>
+        
+        <div class="math-achievements" id="math-achievements"></div>
+      </aside>
+      
+      <main class="math-game-area">
+        <div class="math-game-screen" id="math-game-screen">
+          <h2 id="math-game-title">Wybór Trybu Misji</h2>
+          <p id="math-game-description">Wybierz misję z panelu po lewej, aby rozpocząć kosmiczną przygodę z mnożeniem!</p>
+          
+          <div class="math-visualization" id="math-visualization"></div>
+          
+          <div class="result-display" id="math-result-display"></div>
+          
+          <div class="story-text hidden" id="math-story-text"></div>
+          
+          <div class="math-answer-options" id="math-answer-options"></div>
+          
+          <div class="math-controls">
+            <button class="btn" id="math-hint-btn">Podpowiedź</button>
+            <button class="btn btn-secondary" id="math-next-btn">Dalej</button>
+            <button class="btn" id="math-reset-btn">Reset</button>
+          </div>
+        </div>
+        
+        <div class="multiply-table hidden" id="math-multiply-table"></div>
+      </main>
+    </div>
+
+    <div class="footer">Andrzej & Marcin Dane słownictwa na podstawie planu „Kids Can! 2” (rozdziały i zakres podstawowy/rozszerzony). Projekt edukacyjny — użytek własny w klasie/szkole.</div>
   </div>
 
 <script>
+// === KOSMICZNE TŁO ===
+function createStars() {
+  const starsContainer = document.getElementById('stars');
+  const starCount = 150;
+  
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    
+    const size = Math.random() * 3;
+    star.style.width = `${size}px`;
+    star.style.height = `${size}px`;
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    star.style.animationDelay = `${Math.random() * 5}s`;
+    
+    starsContainer.appendChild(star);
+  }
+}
+
+function createCosmicBackground() {
+  const cosmicBg = document.getElementById('cosmic-bg');
+  
+  for (let i = 0; i < 3; i++) {
+    const rocket = document.createElement('div');
+    rocket.className = 'rocket';
+    rocket.innerHTML = '🚀';
+    rocket.style.left = `${Math.random() * 100}%`;
+    rocket.style.top = `${Math.random() * 100}%`;
+    rocket.style.animationDelay = `${Math.random() * 5}s`;
+    cosmicBg.appendChild(rocket);
+  }
+  
+  for (let i = 0; i < 4; i++) {
+    const alien = document.createElement('div');
+    alien.className = 'alien';
+    alien.innerHTML = '👽';
+    alien.style.left = `${Math.random() * 100}%`;
+    alien.style.top = `${Math.random() * 100}%`;
+    alien.style.animationDelay = `${Math.random() * 8}s`;
+    cosmicBg.appendChild(alien);
+  }
+  
+  for (let i = 0; i < 2; i++) {
+    const ufo = document.createElement('div');
+    ufo.className = 'ufo';
+    ufo.innerHTML = '🛸';
+    ufo.style.left = `${Math.random() * 100}%`;
+    ufo.style.top = `${Math.random() * 100}%`;
+    ufo.style.animationDelay = `${Math.random() * 10}s`;
+    cosmicBg.appendChild(ufo);
+  }
+}
+
+// === PRZEŁĄCZANIE MIĘDZY PRZEDMIOTAMI ===
+document.querySelectorAll('.subject-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    
+    const subject = this.dataset.subject;
+    document.getElementById('englishView').style.display = subject === 'english' ? 'grid' : 'none';
+    document.getElementById('mathView').style.display = subject === 'math' ? 'grid' : 'none';
+  });
+});
+
+// === CZĘŚĆ ANGIELSKA ===
+
 // === Dane słownictwa — ROZDZIAŁY ===
-// Każdy wpis: { en:"…", pl:"…" }
 const DATA = {
   "Wstępny": {
     basic: [
@@ -228,16 +732,15 @@ const DATA = {
   }
 };
 
-// === Stan aplikacji ===
+// === Stan aplikacji angielskiej ===
 let queue = []; // kolejka pytań
 let current = null; // bieżące pytanie {q, a, item}
 let answered = 0, correct = 0;
 let wrongStack = []; // błędne odpowiedzi do powtórki
 let mode = 'mix';
-let ttsEN = null, ttsPL = null;
 let flashIndex = 0; let flashItems = [];
 
-// === Inicjalizacja ===
+// === Inicjalizacja angielska ===
 const chapterSelect = document.getElementById('chapterSelect');
 Object.keys(DATA).forEach((name, idx)=>{
   const opt = document.createElement('option');
@@ -260,21 +763,27 @@ function syncChips(containerId){
 syncChips('scopeRow');
 syncChips('modeRow');
 
-// === TTS ===
-// oddzielny angielski i polski lektor
+// === TTS - POPRAWIONY LEKTOR ANGIELSKI ===
 let voiceEN = null;
 let voicePL = null;
 
 function initVoices() {
   const voices = window.speechSynthesis.getVoices();
-  // wybierz angielski (preferuj naturalne głosy)
+  
+  // Poprawiony wybór lektora angielskiego - preferujemy brytyjski akcent
   voiceEN =
-    voices.find(v => v.lang.startsWith('en-GB')) ||
+    voices.find(v => v.lang.startsWith('en-GB') && v.localService) || // Preferuj brytyjski
+    voices.find(v => v.lang.startsWith('en-US') && v.localService) ||  // Amerykański jako druga opcja
+    voices.find(v => v.lang.toLowerCase().includes('en') && v.localService) || // Jakikolwiek angielski
+    voices.find(v => v.lang.startsWith('en-GB')) || // Bez localService
     voices.find(v => v.lang.startsWith('en-US')) ||
     voices.find(v => v.lang.toLowerCase().includes('en')) ||
     voices[0];
-  // wybierz polski
+  
+  // Polski lektor
   voicePL =
+    voices.find(v => v.lang.startsWith('pl-') && v.localService) ||
+    voices.find(v => v.lang.toLowerCase().includes('pol') && v.localService) ||
     voices.find(v => v.lang.startsWith('pl-')) ||
     voices.find(v => v.lang.toLowerCase().includes('pol')) ||
     voices[0];
@@ -289,8 +798,9 @@ function speakEN(text) {
   if (!voiceEN) initVoices();
   const u = new SpeechSynthesisUtterance(text);
   u.voice = voiceEN;
-  u.rate = 0.95;
+  u.rate = 0.9; // Wolniejsze tempo dla lepszego zrozumienia
   u.pitch = 1.0;
+  u.volume = 1.0;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
 }
@@ -299,8 +809,9 @@ function speakPL(text) {
   if (!voicePL) initVoices();
   const u = new SpeechSynthesisUtterance(text);
   u.voice = voicePL;
-  u.rate = 0.95;
+  u.rate = 0.9;
   u.pitch = 1.0;
+  u.volume = 1.0;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
 }
@@ -313,8 +824,7 @@ document.getElementById('btnTTSpl').onclick = () =>
 document.getElementById('speakPrompt').onclick = () =>
   current ? (current.qLang === 'en' ? speakEN(current.q) : speakPL(current.q)) : null;
 
-
-// === Losowanie pytań ===
+// === Losowanie pytań angielskich ===
 function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
 
 function buildPool(){
@@ -433,7 +943,7 @@ document.getElementById('btnNext').onclick = nextQuestion;
 document.getElementById('btnStart').onclick = startQuiz;
 document.getElementById('btnReset').onclick = ()=>{ queue=[]; wrongStack=[]; answered=0; correct=0; current=null; document.getElementById('prompt').textContent='Wybierz rozdział i kliknij Start testu.'; document.getElementById('choices').innerHTML=''; document.getElementById('counter').textContent='0/0'; document.getElementById('barFill').style.width='0%'; };
 
-// === Tryb fiszek ===
+// === Tryb fiszek angielski ===
 const flashView = document.getElementById('flashView');
 const quizView = document.getElementById('quizView');
 
@@ -469,17 +979,612 @@ document.getElementById('markHard').onclick = ()=>{
   flashIndex++; renderFlash();
 };
 
-document.getElementById('speakFront').onclick = ()=>{ const it=flashItems[flashIndex]; speak(it.en,'en'); };
+document.getElementById('speakFront').onclick = ()=>{ const it=flashItems[flashIndex]; speakEN(it.en); };
 
-document.getElementById('speakBack').onclick = ()=>{ const it=flashItems[flashIndex]; speak(it.pl,'pl'); };
+document.getElementById('speakBack').onclick = ()=>{ const it=flashItems[flashIndex]; speakPL(it.pl); };
 
-// Prefetch voices — inicjalizacja oddzielnych lektorów EN/PL
-if(window.speechSynthesis){
-  window.speechSynthesis.onvoiceschanged = initVoices;
-  // Kickstart pobierania listy głosów (często potrzebne w Chrome/Safari)
-  window.speechSynthesis.getVoices();
-  setTimeout(initVoices, 0);
+// === CZĘŚĆ MATEMATYCZNA - ZACHOWANE WSZYSTKIE EFEKTY WIZUALNE ===
+
+// Główny stan aplikacji matematycznej
+const mathState = {
+  currentPlanet: null,
+  level: 1,
+  points: 0,
+  streak: 0,
+  achievements: [],
+  currentQuestion: null,
+  correctAnswers: 0,
+  totalQuestions: 0,
+  energy: 100
+};
+
+// Inicjalizacja matematyki
+function generatePlanets() {
+  const planetGrid = document.getElementById('planet-grid');
+  const planets = [
+    { 
+      id: 'visual', 
+      name: 'Wizualizacja', 
+      color: '#6C63FF', 
+      icon: '👁️',
+      description: 'Zobacz mnożenie w akcji'
+    },
+    { 
+      id: 'practice', 
+      name: 'Trening', 
+      color: '#FF6584', 
+      icon: '💪',
+      description: 'Ćwicz w różnych konfiguracjach'
+    },
+    { 
+      id: 'challenge', 
+      name: 'Wyzwanie', 
+      color: '#36D1DC', 
+      icon: '🏆',
+      description: 'Sprawdź swoją szybkość'
+    },
+    { 
+      id: 'table', 
+      name: 'Tabela', 
+      color: '#FF9800', 
+      icon: '📊',
+      description: 'Eksploruj całą tabliczkę'
+    },
+    { 
+      id: 'story', 
+      name: 'Opowieść', 
+      color: '#4CAF50', 
+      icon: '📖',
+      description: 'Kosmiczne historie z mnożeniem'
+    }
+  ];
+  
+  planets.forEach(planet => {
+    const planetEl = document.createElement('div');
+    planetEl.className = 'planet';
+    planetEl.style.background = `radial-gradient(circle at 30% 30%, ${planet.color}, ${darkenColor(planet.color, 30)})`;
+    planetEl.style.border = `2px solid ${planet.color}`;
+    planetEl.innerHTML = `
+      <div class="planet-icon">${planet.icon}</div>
+      <div class="planet-name">${planet.name}</div>
+      <div class="planet-desc">${planet.description}</div>
+    `;
+    
+    planetEl.addEventListener('click', () => selectMathPlanet(planet));
+    
+    planetGrid.appendChild(planetEl);
+  });
 }
+
+function generateMathAchievements() {
+  const achievementsContainer = document.getElementById('math-achievements');
+  const achievements = [
+    { id: 'first', icon: '⭐', requirement: 5, name: 'Pierwsze kroki' },
+    { id: 'streak', icon: '🔥', requirement: 10, name: 'Płomień' },
+    { id: 'master', icon: '👑', requirement: 50, name: 'Król mnożenia' },
+    { id: 'genius', icon: '🧠', requirement: 100, name: 'Geniusz' }
+  ];
+  
+  achievements.forEach(ach => {
+    const achEl = document.createElement('div');
+    achEl.className = 'math-achievement';
+    achEl.id = `math-ach-${ach.id}`;
+    achEl.innerHTML = ach.icon;
+    achEl.title = `${ach.name} - ${ach.requirement} poprawnych odpowiedzi`;
+    
+    achievementsContainer.appendChild(achEl);
+  });
+}
+
+function generateMultiplyTable() {
+  const tableContainer = document.getElementById('math-multiply-table');
+  tableContainer.innerHTML = '';
+  
+  // Nagłówek
+  for (let i = 0; i <= 10; i++) {
+    const headerCell = document.createElement('div');
+    headerCell.className = 'table-cell header';
+    headerCell.textContent = i === 0 ? '×' : i;
+    tableContainer.appendChild(headerCell);
+  }
+  
+  // Wiersze
+  for (let i = 1; i <= 10; i++) {
+    const headerCell = document.createElement('div');
+    headerCell.className = 'table-cell header';
+    headerCell.textContent = i;
+    tableContainer.appendChild(headerCell);
+    
+    for (let j = 1; j <= 10; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'table-cell';
+      cell.textContent = i * j;
+      cell.dataset.row = i;
+      cell.dataset.col = j;
+      tableContainer.appendChild(cell);
+    }
+  }
+}
+
+// Wybór planety/misji matematycznej
+function selectMathPlanet(planet) {
+  // Resetowanie poprzedniego wyboru
+  document.querySelectorAll('.planet').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  mathState.currentPlanet = planet.id;
+  
+  // Ukrycie tabliczki mnożenia jeśli była widoczna
+  document.getElementById('math-multiply-table').classList.add('hidden');
+  document.getElementById('math-game-screen').classList.remove('hidden');
+  document.getElementById('math-story-text').classList.add('hidden');
+  
+  switch(planet.id) {
+    case 'visual':
+      startVisualMathMode();
+      break;
+    case 'practice':
+      startPracticeMathMode();
+      break;
+    case 'challenge':
+      startChallengeMathMode();
+      break;
+    case 'table':
+      showMathMultiplyTable();
+      break;
+    case 'story':
+      startStoryMathMode();
+      break;
+  }
+}
+
+// Tryb wizualizacji matematycznej
+function startVisualMathMode() {
+  showMathMessage(
+    "Misja Wizualizacji", 
+    "Zobacz mnożenie jako grupy kosmicznych obiektów. To pomaga zrozumieć koncepcję!"
+  );
+  
+  generateVisualMathQuestion();
+}
+
+// Generowanie wizualnego pytania matematycznego
+function generateVisualMathQuestion() {
+  const num1 = Math.floor(Math.random() * 5) + 1;
+  const num2 = Math.floor(Math.random() * 5) + 1;
+  const answer = num1 * num2;
+  
+  mathState.currentQuestion = { num1, num2, answer };
+  
+  // Wizualizacja
+  const visualization = document.getElementById('math-visualization');
+  visualization.innerHTML = '';
+  
+  // Pierwsza liczba jako grupy
+  const groupsContainer = document.createElement('div');
+  groupsContainer.className = 'multiply-group';
+  
+  for (let i = 0; i < num1; i++) {
+    const group = document.createElement('div');
+    group.className = 'group-container';
+    
+    for (let j = 0; j < num2; j++) {
+      const element = document.createElement('div');
+      element.className = 'math-element';
+      
+      // Różne kosmiczne ikonki
+      const icons = ['🚀', '🛸', '⭐', '🪐', '☄️', '👽'];
+      element.textContent = icons[Math.floor(Math.random() * icons.length)];
+      element.style.background = `hsl(${i * 60}, 70%, 60%)`;
+      element.style.animationDelay = `${(i+j)*0.2}s`;
+      group.appendChild(element);
+    }
+    
+    groupsContainer.appendChild(group);
+  }
+  
+  visualization.appendChild(groupsContainer);
+  
+  // Operator
+  const operator = document.createElement('div');
+  operator.className = 'math-operator';
+  operator.textContent = '=';
+  visualization.appendChild(operator);
+  
+  // Wynik (początkowo ukryty)
+  const resultContainer = document.createElement('div');
+  resultContainer.className = 'multiply-group';
+  
+  const resultGroup = document.createElement('div');
+  resultGroup.className = 'group-container';
+  
+  for (let i = 0; i < answer; i++) {
+    const element = document.createElement('div');
+    element.className = 'math-element';
+    
+    const icons = ['🚀', '🛸', '⭐', '🪐', '☄️', '👽'];
+    element.textContent = icons[Math.floor(Math.random() * icons.length)];
+    element.style.background = `hsl(${i * 10}, 70%, 60%)`;
+    element.style.animationDelay = `${i*0.1}s`;
+    resultGroup.appendChild(element);
+  }
+  
+  resultContainer.appendChild(resultGroup);
+  visualization.appendChild(resultContainer);
+  
+  // Pytanie
+  document.getElementById('math-result-display').textContent = `${num1} × ${num2} = ?`;
+  
+  // Opcje odpowiedzi
+  generateMathAnswerOptions(answer, [answer-2, answer+3, answer+5, answer-5]);
+}
+
+// Tryb treningu matematycznego
+function startPracticeMathMode() {
+  showMathMessage(
+    "Misja Treningu", 
+    "Ćwicz mnożenie w różnych konfiguracjach. Skup się na obszarach, które sprawiają Ci trudność!"
+  );
+  
+  generatePracticeMathQuestion();
+}
+
+// Generowanie pytania treningowego matematycznego
+function generatePracticeMathQuestion() {
+  const num1 = Math.floor(Math.random() * 10) + 1;
+  const num2 = Math.floor(Math.random() * 10) + 1;
+  const answer = num1 * num2;
+  
+  mathState.currentQuestion = { num1, num2, answer };
+  
+  // Wyświetlenie pytania
+  document.getElementById('math-result-display').textContent = `${num1} × ${num2} = ?`;
+  
+  // Wyczyść wizualizację
+  document.getElementById('math-visualization').innerHTML = '';
+  
+  // Generowanie opcji odpowiedzi
+  const wrongAnswers = generateMathWrongAnswers(answer, 3);
+  generateMathAnswerOptions(answer, wrongAnswers);
+}
+
+// Tryb wyzwania matematycznego
+function startChallengeMathMode() {
+  showMathMessage(
+    "Misja Wyzwania", 
+    "Rozwiązuj działania przeciwko czasowi! Sprawdź swoją szybkość i precyzję."
+  );
+  
+  generateChallengeMathQuestion();
+}
+
+// Generowanie pytania wyzwania matematycznego
+function generateChallengeMathQuestion() {
+  const num1 = Math.floor(Math.random() * 10) + 1;
+  const num2 = Math.floor(Math.random() * 10) + 1;
+  const answer = num1 * num2;
+  
+  mathState.currentQuestion = { num1, num2, answer };
+  
+  // Wyświetlenie pytania
+  document.getElementById('math-result-display').textContent = `${num1} × ${num2} = ?`;
+  
+  // Wyczyść wizualizację
+  document.getElementById('math-visualization').innerHTML = '';
+  
+  // Generowanie opcji odpowiedzi
+  const wrongAnswers = generateMathWrongAnswers(answer, 3);
+  generateMathAnswerOptions(answer, wrongAnswers);
+}
+
+// Pokazanie tabliczki mnożenia matematycznej
+function showMathMultiplyTable() {
+  document.getElementById('math-game-screen').classList.add('hidden');
+  document.getElementById('math-multiply-table').classList.remove('hidden');
+  
+  // Podświetlenie wybranej kolumny/wiersza
+  const randomRow = Math.floor(Math.random() * 10) + 1;
+  const randomCol = Math.floor(Math.random() * 10) + 1;
+  
+  document.querySelectorAll('.table-cell').forEach(cell => {
+    cell.classList.remove('highlight');
+    
+    if (cell.dataset.row == randomRow || cell.dataset.col == randomCol) {
+      cell.classList.add('highlight');
+    }
+  });
+}
+
+// Tryb opowieści matematycznej
+function startStoryMathMode() {
+  showMathMessage(
+    "Misja Opowieści", 
+    "Odkryj kosmiczne historie, w których mnożenie odgrywa kluczową rolę!"
+  );
+  
+  generateStoryMathQuestion();
+}
+
+// Generowanie pytania w trybie historii matematycznej
+function generateStoryMathQuestion() {
+  const stories = [
+    {
+      scenario: "Statek kosmiczny 'Gwiezdny Eksplorator' potrzebuje paliwa do podróży międzygalaktycznej. Każdy z 5 silników wymaga 3 kapsuł specjalnego paliwa. Ile kapsuł potrzebuje kapitan Zorax, aby wypełnić wszystkie zbiorniki?",
+      num1: 5,
+      num2: 3,
+      answer: 15
+    },
+    {
+      scenario: "Na stacji kosmicznej 'Andromeda' mieszka 6 astronautów. Każdy z nich zjada 4 posiłki dziennie, aby utrzymać siły podczas eksperymentów. Ile posiłków musi przygotować sztuczna inteligencja STELLA każdego dnia?",
+      num1: 6,
+      num2: 4,
+      answer: 24
+    },
+    {
+      scenario: "Kosmiczny ogród na planecie Flora ma 8 rzędów magicznych roślin. W każdym rzędzie rośnie 7 roślin, które wytwarzają tlen dla kolonii. Ile roślin jest w ogrodzie?",
+      num1: 8,
+      num2: 7,
+      answer: 56
+    },
+    {
+      scenario: "Podczas misji na księżycu Jowisza, Europa, każdy z 9 łazików zbiera 6 próbek skał dziennie. Ile próbek zostanie zebranych po jednym dniu eksploracji?",
+      num1: 9,
+      num2: 6,
+      answer: 54
+    }
+  ];
+  
+  const story = stories[Math.floor(Math.random() * stories.length)];
+  const answer = story.answer;
+  
+  mathState.currentQuestion = { 
+    num1: story.num1, 
+    num2: story.num2, 
+    answer,
+    scenario: story.scenario
+  };
+  
+  // Wyświetlenie scenariusza
+  document.getElementById('math-story-text').textContent = story.scenario;
+  document.getElementById('math-story-text').classList.remove('hidden');
+  document.getElementById('math-result-display').textContent = `Ile to jest ${story.num1} × ${story.num2}?`;
+  
+  // Wyczyść wizualizację
+  document.getElementById('math-visualization').innerHTML = '';
+  
+  // Generowanie opcji odpowiedzi
+  const wrongAnswers = generateMathWrongAnswers(answer, 3);
+  generateMathAnswerOptions(answer, wrongAnswers);
+}
+
+// Generowanie błędnych odpowiedzi matematycznych
+function generateMathWrongAnswers(correct, count) {
+  const wrongAnswers = [];
+  
+  while (wrongAnswers.length < count) {
+    const wrong = correct + (Math.floor(Math.random() * 10) - 5);
+    if (wrong !== correct && wrong > 0 && !wrongAnswers.includes(wrong)) {
+      wrongAnswers.push(wrong);
+    }
+  }
+  
+  return wrongAnswers;
+}
+
+// Generowanie opcji odpowiedzi matematycznych
+function generateMathAnswerOptions(correct, wrongAnswers) {
+  const optionsContainer = document.getElementById('math-answer-options');
+  optionsContainer.innerHTML = '';
+  
+  // Połącz poprawne i błędne odpowiedzi
+  const allAnswers = [correct, ...wrongAnswers];
+  
+  // Pomieszaj kolejność
+  for (let i = allAnswers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+  }
+  
+  // Utwórz przyciski odpowiedzi
+  allAnswers.forEach(answer => {
+    const option = document.createElement('div');
+    option.className = 'choice';
+    option.textContent = answer;
+    
+    option.addEventListener('click', () => checkMathAnswer(answer, correct, option));
+    
+    optionsContainer.appendChild(option);
+  });
+}
+
+// Sprawdzanie odpowiedzi matematycznych
+function checkMathAnswer(selected, correct, element) {
+  mathState.totalQuestions++;
+  mathState.energy = Math.max(0, mathState.energy - 1);
+  
+  if (selected === correct) {
+    // Poprawna odpowiedź
+    element.classList.add('correct');
+    mathState.correctAnswers++;
+    mathState.streak++;
+    mathState.points += 10 * mathState.streak;
+    
+    // Aktualizacja statystyk
+    updateMathStats();
+    
+    // Sprawdź osiągnięcia
+    checkMathAchievements();
+    
+    // Animacja sukcesu
+    createConfetti();
+    
+    // Komunikat
+    showMathMessage("Dobrze!", `Poprawna odpowiedź! ${mathState.streak} poprawnych z rzędu!`);
+  } else {
+    // Błędna odpowiedź
+    element.classList.add('incorrect');
+    mathState.streak = 0;
+    
+    // Pokaż poprawną odpowiedź
+    document.querySelectorAll('#math-answer-options .choice').forEach(opt => {
+      if (parseInt(opt.textContent) === correct) {
+        opt.classList.add('correct');
+      }
+    });
+    
+    showMathMessage("Spróbuj ponownie", `Poprawna odpowiedź to ${correct}.`);
+  }
+  
+  // Zablokuj przyciski po udzieleniu odpowiedzi
+  document.querySelectorAll('#math-answer-options .choice').forEach(opt => {
+    opt.style.pointerEvents = 'none';
+  });
+}
+
+// Aktualizacja statystyk matematycznych
+function updateMathStats() {
+  document.getElementById('math-points').textContent = mathState.points;
+  document.getElementById('math-energy').textContent = mathState.energy;
+  
+  // Aktualizacja paska postępu
+  const progress = (mathState.correctAnswers / Math.max(1, mathState.totalQuestions)) * 100;
+  document.getElementById('math-progress-bar').style.width = `${progress}%`;
+  
+  // Aktualizacja poziomu
+  const newLevel = Math.floor(mathState.correctAnswers / 10) + 1;
+  if (newLevel > mathState.level) {
+    mathState.level = newLevel;
+    document.getElementById('math-level').textContent = mathState.level;
+    showMathMessage("Awans!", `Osiągnąłeś poziom ${mathState.level}!`);
+    createConfetti();
+  }
+}
+
+// Sprawdzanie osiągnięć matematycznych
+function checkMathAchievements() {
+  const achievements = [
+    { id: 'first', count: 5 },
+    { id: 'streak', count: 10 },
+    { id: 'master', count: 50 },
+    { id: 'genius', count: 100 }
+  ];
+  
+  achievements.forEach(ach => {
+    if (mathState.correctAnswers >= ach.count && !mathState.achievements.includes(ach.id)) {
+      mathState.achievements.push(ach.id);
+      document.getElementById(`math-ach-${ach.id}`).classList.add('unlocked');
+      showMathMessage("Osiągnięcie odblokowane!", `Zdobyłeś osiągnięcie za ${ach.count} poprawnych odpowiedzi!`);
+      createConfetti();
+    }
+  });
+}
+
+// Tworzenie konfetti
+function createConfetti() {
+  const celebration = document.getElementById('celebration');
+  celebration.innerHTML = '';
+  
+  for (let i = 0; i < 50; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = `${Math.random() * 100}%`;
+    confetti.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+    confetti.style.animationDelay = `${Math.random() * 2}s`;
+    celebration.appendChild(confetti);
+  }
+  
+  setTimeout(() => {
+    celebration.innerHTML = '';
+  }, 5000);
+}
+
+// Wyświetlanie wiadomości matematycznych
+function showMathMessage(title, description) {
+  document.getElementById('math-game-title').textContent = title;
+  document.getElementById('math-game-description').textContent = description;
+}
+
+// Pomocnicza funkcja do przyciemniania koloru
+function darkenColor(color, percent) {
+  const num = parseInt(color.replace("#", ""), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = (num >> 16) - amt;
+  const G = (num >> 8 & 0x00FF) - amt;
+  const B = (num & 0x0000FF) - amt;
+  
+  return "#" + (
+    0x1000000 + 
+    (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + 
+    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + 
+    (B < 255 ? B < 1 ? 0 : B : 255)
+  ).toString(16).slice(1);
+}
+
+// Ustawienie nasłuchiwaczy zdarzeń matematycznych
+document.getElementById('math-next-btn').addEventListener('click', () => {
+  if (mathState.currentPlanet) {
+    switch(mathState.currentPlanet) {
+      case 'visual':
+        generateVisualMathQuestion();
+        break;
+      case 'practice':
+        generatePracticeMathQuestion();
+        break;
+      case 'challenge':
+        generateChallengeMathQuestion();
+        break;
+      case 'story':
+        generateStoryMathQuestion();
+        break;
+    }
+    
+    // Odblokuj przyciski odpowiedzi
+    document.querySelectorAll('#math-answer-options .choice').forEach(opt => {
+      opt.style.pointerEvents = 'auto';
+      opt.classList.remove('correct', 'incorrect');
+    });
+  }
+});
+
+document.getElementById('math-hint-btn').addEventListener('click', () => {
+  if (mathState.currentQuestion) {
+    showMathMessage("Podpowiedź", `Spróbuj obliczyć ${mathState.currentQuestion.num1} + ${mathState.currentQuestion.num1} + ... (${mathState.currentQuestion.num2} razy)`);
+  }
+});
+
+document.getElementById('math-reset-btn').addEventListener('click', () => {
+  mathState.correctAnswers = 0;
+  mathState.totalQuestions = 0;
+  mathState.streak = 0;
+  mathState.points = 0;
+  mathState.energy = 100;
+  mathState.level = 1;
+  updateMathStats();
+  showMathMessage("Zresetowano postęp", "Twój postęp został zresetowany. Zacznij od nowa!");
+});
+
+// === INICJALIZACJA CAŁOŚCI ===
+document.addEventListener('DOMContentLoaded', function() {
+  createStars();
+  createCosmicBackground();
+  
+  // Inicjalizacja angielskiego
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = initVoices;
+    setTimeout(initVoices, 0);
+  }
+  
+  // Inicjalizacja matematyki
+  generatePlanets();
+  generateMathAchievements();
+  generateMultiplyTable();
+  
+  // Początkowa wiadomość matematyczna
+  showMathMessage(
+    "Witaj, Kosmiczny Podróżniku z Klasy 2B!", 
+    "Twoja misja to opanowanie tabliczki mnożenia! Wybierz misję, aby rozpocząć trening."
+  );
+});
 </script>
 </body>
 </html>
